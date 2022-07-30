@@ -21,7 +21,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public User get(Long id) {
-        return storage.stream().filter(o-> Objects.equals(o.getId(), id)).findFirst().orElse(null);
+        return storage.stream().filter(o -> Objects.equals(o.getId(), id)).findFirst().orElse(null);
     }
 
     @Override

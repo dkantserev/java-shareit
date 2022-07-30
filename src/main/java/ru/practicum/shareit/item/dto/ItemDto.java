@@ -7,9 +7,7 @@ import ru.practicum.shareit.requests.ItemRequest;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-/**
- * // TODO .
- */
+
 @Data
 @Builder
 public class ItemDto {

@@ -6,7 +6,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.itemException.ItemNotFound;
+import ru.practicum.shareit.item.itemException.ItemNotFound;
 import ru.practicum.shareit.user.UserExceptions.UserNotFound;
 import ru.practicum.shareit.user.userSevice.UserService;
 
@@ -62,7 +62,7 @@ public class ItemService {
         List<ItemDto> all = new ArrayList<>();
         itemStorage.getAll().forEach(o -> all.add(MapperItemDto.toItemDto(o)));
         if (userId.isPresent()) {
-            return all.stream().filter(o -> o.getOwner() == userId.get()).collect(Collectors.toList());
+            return all.stream().filter(o -> Objects.equals(o.getOwner(), userId.get())).collect(Collectors.toList());
         }
         return all;
     }
@@ -70,7 +70,7 @@ public class ItemService {
     public List<ItemDto> search(Optional<String> text) {
         List<ItemDto> returnSearch = new ArrayList<>();
         if (text.isPresent()) {
-            if(text.get().isBlank()){
+            if (text.get().isBlank()) {
                 return returnSearch;
             }
             String search = text.get().toLowerCase(Locale.ROOT);
@@ -85,10 +85,7 @@ public class ItemService {
     }
 
     private Boolean checkUser(Long id) {
-        if (userService.get(id) != null) {
-            return true;
-        }
-        return false;
+        return userService.get(id) != null;
     }
 
     public ItemDto get(Long itemId) {

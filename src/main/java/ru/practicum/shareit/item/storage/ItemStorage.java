@@ -10,6 +10,5 @@ public interface ItemStorage {
     Item get(Long id);
     List<Item> getAll();
     void delete(Long id);
-
     Long getNextId();
 }

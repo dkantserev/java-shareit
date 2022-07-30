@@ -3,15 +3,11 @@ package ru.practicum.shareit.user;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserDtoUpdate;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.userSevice.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * // TODO .
- */
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
@@ -24,7 +20,6 @@ public class UserController {
     @PostMapping
     public UserDto add(@Valid @RequestBody UserDto user) {
         return userService.add(user);
-
     }
 
     @GetMapping

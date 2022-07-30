@@ -9,9 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * // TODO .
- */
+
 @RestController
 @RequestMapping("/items")
 public class ItemController {
@@ -22,12 +20,14 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto add(@Valid @RequestBody(required = false) Optional<ItemDto> itemDto, @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
+    public ItemDto add(@Valid @RequestBody(required = false) Optional<ItemDto> itemDto
+            , @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         return itemService.add(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestBody ItemDtoUpdate itemDtoUpdate, @RequestHeader("X-Sharer-User-Id") Optional<Long> userId,@PathVariable Optional<Long> itemId){
+    public ItemDto update(@RequestBody ItemDtoUpdate itemDtoUpdate
+            , @RequestHeader("X-Sharer-User-Id") Optional<Long> userId,@PathVariable Optional<Long> itemId){
       return   itemService.update(itemDtoUpdate,userId,itemId);
     }
 

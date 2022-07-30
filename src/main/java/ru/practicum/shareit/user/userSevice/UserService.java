@@ -12,7 +12,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +21,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class UserService {
+
     private final UserStorage storage;
 
     public UserService(@Qualifier("inMemoryUserStorage") UserStorage storage) {
@@ -63,14 +63,14 @@ public class UserService {
     }
 
     public UserDto get(Long id) {
-        if(storage.get(id)==null){
+        if (storage.get(id) == null) {
             throw new UserNotFound("user not found");
         }
         return MapperUserDto.toUserDto(storage.get(id));
     }
 
     public void delete(long userId) {
-        if(storage.get(userId)==null){
+        if (storage.get(userId) == null) {
             throw new UserNotFound("user not found");
         }
         storage.delete(userId);
