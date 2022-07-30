@@ -27,22 +27,22 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestBody ItemDtoUpdate itemDtoUpdate
-            , @RequestHeader("X-Sharer-User-Id") Optional<Long> userId,@PathVariable Optional<Long> itemId){
-      return   itemService.update(itemDtoUpdate,userId,itemId);
+            , @RequestHeader("X-Sharer-User-Id") Optional<Long> userId, @PathVariable Optional<Long> itemId) {
+        return itemService.update(itemDtoUpdate, userId, itemId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto get(@PathVariable Long itemId){
-      return   itemService.get(itemId);
+    public ItemDto get(@PathVariable Long itemId) {
+        return itemService.get(itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId){
+    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         return itemService.getAllItemsUser(userId);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam Optional<String> text){
+    public List<ItemDto> search(@RequestParam Optional<String> text) {
         return itemService.search(text);
     }
 }

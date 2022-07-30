@@ -6,6 +6,7 @@ import ru.practicum.shareit.requests.ItemRequest;
 
 @Data
 public class ItemDtoUpdate {
+
     private Long id;
     private String name;
     private String description;

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class ItemService {
+
     private final ItemStorage itemStorage;
     private final UserService userService;
 
@@ -24,6 +25,7 @@ public class ItemService {
     }
 
     public ItemDto add(Optional<ItemDto> itemDto, Optional<Long> userId) {
+
         if (userId.isEmpty()) {
             throw new RuntimeException("must be id");
         }
@@ -38,6 +40,7 @@ public class ItemService {
     }
 
     public ItemDto update(ItemDtoUpdate itemDtoUpdate, Optional<Long> userId, Optional<Long> itemId) {
+
         if (userId.isEmpty() || itemId.isEmpty()) {
             throw new RuntimeException("must be id");
         }
@@ -59,6 +62,7 @@ public class ItemService {
     }
 
     public List<ItemDto> getAllItemsUser(Optional<Long> userId) {
+
         List<ItemDto> all = new ArrayList<>();
         itemStorage.getAll().forEach(o -> all.add(MapperItemDto.toItemDto(o)));
         if (userId.isPresent()) {
@@ -68,6 +72,7 @@ public class ItemService {
     }
 
     public List<ItemDto> search(Optional<String> text) {
+
         List<ItemDto> returnSearch = new ArrayList<>();
         if (text.isPresent()) {
             if (text.get().isBlank()) {
@@ -85,10 +90,12 @@ public class ItemService {
     }
 
     private Boolean checkUser(Long id) {
+
         return userService.get(id) != null;
     }
 
     public ItemDto get(Long itemId) {
+
         if (itemStorage.get(itemId) != null) {
             return MapperItemDto.toItemDto(itemStorage.get(itemId));
         } else {
