@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class InMemoryItemStorage implements ItemStorage{
+public class InMemoryItemStorage implements ItemStorage {
 
     private List<Item> itemStorage = new ArrayList<>();
-    private Long id=0L;
+    private Long id = 0L;
 
     @Override
     public Item add(Item item) {
@@ -21,7 +21,7 @@ public class InMemoryItemStorage implements ItemStorage{
 
     @Override
     public Item get(Long id) {
-        return itemStorage.stream().filter(o-> Objects.equals(o.getId(), id)).findFirst().orElse(null);
+        return itemStorage.stream().filter(o -> Objects.equals(o.getId(), id)).findFirst().orElse(null);
     }
 
     @Override

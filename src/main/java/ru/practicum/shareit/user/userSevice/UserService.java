@@ -47,7 +47,7 @@ public class UserService {
 
     public UserDto update(Long id, UserDtoUpdate userDto) {
         if (userDto.getEmail() != null) {
-            if (UserDtoEmailValidation(userDto)) {
+            if (userDtoEmailValidation(userDto)) {
                 throw new UserUpdateException("bad email");
             }
             if (validatorDuplicateEmail(userDto.getEmail())) {
@@ -84,7 +84,7 @@ public class UserService {
         return storage.getNextId();
     }
 
-    private boolean UserDtoEmailValidation(UserDtoUpdate userDto) {
+    private boolean userDtoEmailValidation(UserDtoUpdate userDto) {
 
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\" +
                 ".[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
