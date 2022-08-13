@@ -12,5 +12,5 @@ public class ItemDtoUpdate {
     private String description;
     private Boolean available;
     private Long owner;
-    private ItemRequest request;
+    private Long request;
 }

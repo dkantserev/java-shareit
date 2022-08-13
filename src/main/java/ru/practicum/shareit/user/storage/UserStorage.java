@@ -1,13 +1,14 @@
 package ru.practicum.shareit.user.storage;
 
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-@Component
-public interface UserStorage {
-    User add(User user);
+@Repository
+public interface UserStorage extends JpaRepository<User,Long> {
+ /* User add(User user);
 
     User get(Long id);
 
@@ -17,6 +18,6 @@ public interface UserStorage {
 
     User delete(Long id);
 
-    Long getNextId();
+    Long getNextId();*/
 
 }

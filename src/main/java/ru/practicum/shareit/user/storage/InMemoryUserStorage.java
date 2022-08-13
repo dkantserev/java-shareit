@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+/*
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
@@ -54,4 +54,4 @@ public class InMemoryUserStorage implements UserStorage {
 
         return ++id;
     }
-}
+}*/

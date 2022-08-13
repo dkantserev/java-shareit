@@ -8,22 +8,24 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.itemException.ItemNotFound;
 import ru.practicum.shareit.user.UserExceptions.UserNotFound;
-import ru.practicum.shareit.user.userSevice.UserService;
+
+import ru.practicum.shareit.user.userSevice.UserServiceImp;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
+/*
 @Component
-public class ItemService {
+public class ItemService implements ItemServiceInterface {
 
     private final ItemStorage itemStorage;
-    private final UserService userService;
+    private final UserServiceImp userService;
 
-    public ItemService(ItemStorage itemStorage, UserService userService) {
+    public ItemService(ItemStorage itemStorage, UserServiceImp userService) {
         this.itemStorage = itemStorage;
         this.userService = userService;
     }
 
+    @Override
     public ItemDto add(Optional<ItemDto> itemDto, Optional<Long> userId) {
 
         if (userId.isEmpty()) {
@@ -39,6 +41,7 @@ public class ItemService {
         return itemDto.get();
     }
 
+    @Override
     public ItemDto update(ItemDtoUpdate itemDtoUpdate, Optional<Long> userId, Optional<Long> itemId) {
 
         if (userId.isEmpty() || itemId.isEmpty()) {
@@ -61,6 +64,7 @@ public class ItemService {
         }
     }
 
+    @Override
     public List<ItemDto> getAllItemsUser(Optional<Long> userId) {
 
         List<ItemDto> all = new ArrayList<>();
@@ -71,6 +75,7 @@ public class ItemService {
         return all;
     }
 
+    @Override
     public List<ItemDto> search(Optional<String> text) {
 
         List<ItemDto> returnSearch = new ArrayList<>();
@@ -94,6 +99,7 @@ public class ItemService {
         return userService.get(id) != null;
     }
 
+    @Override
     public ItemDto get(Long itemId) {
 
         if (itemStorage.get(itemId) != null) {
@@ -105,3 +111,4 @@ public class ItemService {
 
 
 }
+*/

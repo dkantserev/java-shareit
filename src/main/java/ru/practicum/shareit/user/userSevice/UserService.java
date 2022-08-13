@@ -19,9 +19,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+/*
 @Service
-public class UserService {
+public class UserService implements UserServiceInterface {
 
     private final UserStorage storage;
 
@@ -29,6 +29,7 @@ public class UserService {
         this.storage = storage;
     }
 
+    @Override
     public UserDto add(UserDto userDto) {
         User user = MapperUserDto.toUser(userDto);
         if (validatorDuplicateEmail(user.getEmail())) {
@@ -40,12 +41,14 @@ public class UserService {
         return MapperUserDto.toUserDto(user);
     }
 
+    @Override
     public List<UserDto> getAll() {
         List<UserDto> users = new ArrayList<>();
         storage.getAll().forEach(o -> users.add(MapperUserDto.toUserDto(o)));
         return users;
     }
 
+    @Override
     public UserDto update(Long id, UserDtoUpdate userDto) {
         if (userDto.getEmail() != null) {
             if (userDtoEmailValidation(userDto)) {
@@ -63,6 +66,7 @@ public class UserService {
         return MapperUserDto.toUserDto(storage.get(id));
     }
 
+    @Override
     public UserDto get(Long id) {
         if (storage.get(id) == null) {
             throw new UserNotFound("user not found");
@@ -70,6 +74,7 @@ public class UserService {
         return MapperUserDto.toUserDto(storage.get(id));
     }
 
+    @Override
     public void delete(long userId) {
         if (storage.get(userId) == null) {
             throw new UserNotFound("user not found");
@@ -96,4 +101,4 @@ public class UserService {
     }
 
 
-}
+}*/

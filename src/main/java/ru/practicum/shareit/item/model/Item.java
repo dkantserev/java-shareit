@@ -1,17 +1,21 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Builder;
-import lombok.Data;
-import ru.practicum.shareit.requests.ItemRequest;
+import lombok.*;
+import ru.practicum.shareit.booking.model.Booking;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
-@Data
-@Builder
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name="items")
 public class Item {
-
+@Id
+@GeneratedValue(strategy= GenerationType.IDENTITY )
     private Long id;
     @NotBlank
     private String name;
@@ -20,5 +24,8 @@ public class Item {
     @NotNull
     private Boolean available;
     private Long owner;
-    private ItemRequest request;
+    @Column(name="request_id")
+    private Long request;
+    @OneToOne(mappedBy = "item",cascade = CascadeType.ALL)
+    private Booking booking;
 }
