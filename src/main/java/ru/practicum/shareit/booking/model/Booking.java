@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
@@ -17,17 +18,21 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Table
+@ToString
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
-    private  LocalDateTime start;
-    private  LocalDateTime endBooking;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="item_id")
-    private  Item item;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="booker_id")
-    private  User booker;
+    private Long id;
+    private LocalDateTime start;
+    private LocalDateTime endBooking;
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "item_id")
+    @JsonIgnore
+    private Item item;
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "booker_id")
+    @JsonIgnore
+    private User booker;
+    @Enumerated(value = EnumType.STRING)
     private BookingStatus status;
 }

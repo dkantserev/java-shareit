@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 
 @Repository
-public interface UserStorage extends JpaRepository<User,Long> {
+public interface UserStorage extends JpaRepository<User,Long>,UserSearch {
  /* User add(User user);
 
     User get(Long id);
