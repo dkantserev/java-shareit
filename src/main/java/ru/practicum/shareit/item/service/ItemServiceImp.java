@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.MapperBookingDto;
+import ru.practicum.shareit.booking.storage.BookingStorageInterface;
 import ru.practicum.shareit.item.MapperItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
@@ -11,6 +13,7 @@ import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.UserExceptions.UserNotFound;
 import ru.practicum.shareit.user.userSevice.UserServiceImp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,10 +25,12 @@ public class ItemServiceImp implements ItemServiceInterface{
 
    private final ItemStorage storage;
    private final UserServiceImp userService;
+   private final BookingStorageInterface booking;
 
-    public ItemServiceImp(ItemStorage storage, UserServiceImp userService) {
+    public ItemServiceImp(ItemStorage storage, UserServiceImp userService, BookingStorageInterface booking) {
         this.storage = storage;
         this.userService = userService;
+        this.booking = booking;
     }
 
     @Override
@@ -106,9 +111,19 @@ public class ItemServiceImp implements ItemServiceInterface{
     }
 
     @Override
-    public ItemDto get(Long itemId) {
-        if(storage.findById(itemId).isPresent()) {
-            return MapperItemDto.toItemDto(storage.findById(itemId).get());
+    public ItemDto get(Long itemId,Optional<Long> userId) {
+
+
+        if(storage.findById(itemId).isPresent()&&userId.isPresent()) {
+            Boolean owner = Objects.equals(storage.findById(itemId).get().getOwner(), userId.get());
+            ItemDto item=MapperItemDto.toItemDto(storage.findById(itemId).get());
+            if(booking.findFirstByItem_idAndEndBookingBefore(itemId, LocalDateTime.now()).isPresent()&&owner){
+                item.setLastBooking(MapperBookingDto.toBookingItem(booking.findFirstByItem_idAndEndBookingBefore(itemId, LocalDateTime.now()).get()));
+            }
+            if(booking.findFirstByItem_idAndStartAfter(itemId, LocalDateTime.now()).isPresent()&&owner){
+                item.setNextBooking(MapperBookingDto.toBookingItem(booking.findFirstByItem_idAndStartAfter(itemId, LocalDateTime.now()).get()));
+            }
+            return item;
         }
         throw new ItemNotFound("item not found");
     }

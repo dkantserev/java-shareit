@@ -25,7 +25,7 @@ public class Booking {
     private Long id;
     private LocalDateTime start;
     private LocalDateTime endBooking;
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     @JsonIgnore
     private Item item;

@@ -16,6 +16,6 @@ public interface ItemServiceInterface {
 
     List<ItemDto> search(Optional<String> text);
 
-    ItemDto get(Long itemId);
+    ItemDto get(Long itemId,Optional<Long> userId);
 
 }
