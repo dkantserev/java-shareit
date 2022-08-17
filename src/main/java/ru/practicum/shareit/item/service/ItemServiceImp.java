@@ -3,7 +3,9 @@ package ru.practicum.shareit.item.service;
 
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.MapperBookingDto;
+import ru.practicum.shareit.booking.exception.BookingException;
 import ru.practicum.shareit.booking.storage.BookingStorageInterface;
+import ru.practicum.shareit.comment.storage.CommentStorage;
 import ru.practicum.shareit.item.MapperItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
@@ -14,10 +16,7 @@ import ru.practicum.shareit.user.UserExceptions.UserNotFound;
 import ru.practicum.shareit.user.userSevice.UserServiceImp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,11 +25,13 @@ public class ItemServiceImp implements ItemServiceInterface{
    private final ItemStorage storage;
    private final UserServiceImp userService;
    private final BookingStorageInterface booking;
+   private final CommentStorage comment;
 
-    public ItemServiceImp(ItemStorage storage, UserServiceImp userService, BookingStorageInterface booking) {
+    public ItemServiceImp(ItemStorage storage, UserServiceImp userService, BookingStorageInterface booking, CommentStorage comment) {
         this.storage = storage;
         this.userService = userService;
         this.booking = booking;
+        this.comment = comment;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class ItemServiceImp implements ItemServiceInterface{
     public ItemDto update(ItemDtoUpdate itemDtoUpdate, Optional<Long> userId, Optional<Long> itemId) {
         if(userId.isPresent()&&itemId.isPresent()){
             if(storage.findById(itemId.get()).isEmpty()){
-                throw new ItemNotFound("item not found");
+                throw new BookingException("item not found");
             }
             if(userService.get(userId.get())==null){
                 throw new RuntimeException("owner not found");
@@ -92,7 +93,9 @@ public class ItemServiceImp implements ItemServiceInterface{
         }
 
         storage.findByOwner(userId.get()).forEach(o->all.add(MapperItemDto.toItemDto(o)));
-        return all ;
+        all.forEach(o->o.setComments(comment.getCommentByItemId(o.getId())));
+        all.forEach(o->fillBooking(o,userId.get()));
+        return all.stream().sorted(Comparator.comparing(ItemDto::getId)).collect(Collectors.toList());
     }
 
     @Override
@@ -123,9 +126,20 @@ public class ItemServiceImp implements ItemServiceInterface{
             if(booking.findFirstByItem_idAndStartAfter(itemId, LocalDateTime.now()).isPresent()&&owner){
                 item.setNextBooking(MapperBookingDto.toBookingItem(booking.findFirstByItem_idAndStartAfter(itemId, LocalDateTime.now()).get()));
             }
+            item.setComments(comment.getCommentByItemId(itemId));
             return item;
         }
         throw new ItemNotFound("item not found");
+    }
+
+    private void fillBooking(ItemDto itemDto,Long userId){
+        Boolean owner = Objects.equals(storage.findById(itemDto.getId()).get().getOwner(), userId);
+        if(booking.findFirstByItem_idAndEndBookingBefore(itemDto.getId(), LocalDateTime.now()).isPresent()&&owner){
+            itemDto.setLastBooking(MapperBookingDto.toBookingItem(booking.findFirstByItem_idAndEndBookingBefore(itemDto.getId(), LocalDateTime.now()).get()));
+        }
+        if(booking.findFirstByItem_idAndStartAfter(itemDto.getId(), LocalDateTime.now()).isPresent()&&owner){
+            itemDto.setNextBooking(MapperBookingDto.toBookingItem(booking.findFirstByItem_idAndStartAfter(itemDto.getId(), LocalDateTime.now()).get()));
+        }
     }
 
 }

@@ -15,6 +15,7 @@ public class MapperItemDto {
                 .owner(item.getOwner())
                 .request(item.getRequest())
                 .available(item.getAvailable())
+                .comments(item.getComments())
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class MapperItemDto {
         item.setOwner(item.getOwner());
         item.setRequest(item.getRequest());
         item.setAvailable(itemDto.getAvailable());
+        item.setComments(itemDto.getComments());
 
         return item;
     }

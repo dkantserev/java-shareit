@@ -138,6 +138,10 @@ public class BookingServiceImp {
             return all.stream().filter(o -> o.getStatus().equals(BookingStatus.WAITING))
                     .sorted(Comparator.comparing(BookingDto::getStart)).collect(Collectors.toList());
         }
+        if (state.equals("CURRENT")) {
+            return all.stream().filter(o -> o.getStatus().equals(BookingStatus.REJECTED))
+                    .sorted(Comparator.comparing(BookingDto::getStart)).collect(Collectors.toList());
+        }
         if (state.equals("REJECTED")) {
             return all.stream().filter(o -> o.getStatus().equals(BookingStatus.REJECTED))
                     .sorted(Comparator.comparing(BookingDto::getStart)).collect(Collectors.toList());
@@ -170,15 +174,15 @@ public class BookingServiceImp {
             return userBooking;
         }
         if (state.equals("WAITING")) {
-            storage.ownerBookingWaiting(userId.get(),BookingStatus.WAITING).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+            storage.ownerBookingWaiting(userId.get(),BookingStatus.WAITING,LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
             return userBooking;
         }
         if (state.equals("CURRENT")) {
-            storage.ownerBookingWaiting(userId.get(),BookingStatus.APPROVED).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+            storage.ownerBookingWaiting(userId.get(),BookingStatus.REJECTED,LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
             return userBooking;
         }
         if (state.equals("REJECTED")) {
-            storage.ownerBookingWaiting(userId.get(),BookingStatus.REJECTED).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+            storage.ownerBookingWaiting(userId.get(),BookingStatus.REJECTED,LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
             return userBooking;
         }
         throw new StatusException("Unknown state: UNSUPPORTED_STATUS");

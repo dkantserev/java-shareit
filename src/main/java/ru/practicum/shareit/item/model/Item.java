@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.comment.model.Comment;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -30,4 +31,6 @@ public class Item {
     private Long request;
     @OneToMany(mappedBy = "item" ,cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Booking> booking;
+    @OneToMany(mappedBy = "item" ,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Comment> comments;
 }

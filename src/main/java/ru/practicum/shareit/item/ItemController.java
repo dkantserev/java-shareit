@@ -1,8 +1,10 @@
 package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.comment.commentDto.CommentDto;
+import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.comment.service.CommentService;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
 import ru.practicum.shareit.item.service.ItemServiceInterface;
@@ -17,9 +19,11 @@ import java.util.Optional;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemServiceInterface itemService;
+    private final CommentService commentService;
 
-    public ItemController( ItemServiceInterface itemService) {
+    public ItemController(ItemServiceInterface itemService, CommentService commentService) {
         this.itemService = itemService;
+        this.commentService = commentService;
     }
 
     @PostMapping
@@ -52,5 +56,11 @@ public class ItemController {
     public List<ItemDto> search(@RequestParam Optional<String> text) {
         text.ifPresent(s -> log.info("search " + s));
         return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment (@RequestHeader("X-Sharer-User-Id") Optional<Long> userId, @PathVariable Optional<Long> itemId
+            ,@RequestBody Comment comment){
+        return commentService.add(userId,itemId,comment);
     }
 }
