@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.*;
 import ru.practicum.shareit.booking.model.Booking;
 
@@ -27,7 +27,7 @@ public class User {
     @Email
     @Column(name = "email")
     private String email;
-    @OneToMany(mappedBy = "booker",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "booker", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Booking> booking;
 
 

@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.*;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.comment.model.Comment;
@@ -15,10 +15,10 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="items")
+@Table(name = "items")
 public class Item {
-@Id
-@GeneratedValue(strategy= GenerationType.IDENTITY )
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
     private String name;
@@ -27,10 +27,10 @@ public class Item {
     @NotNull
     private Boolean available;
     private Long owner;
-    @Column(name="request_id")
+    @Column(name = "request_id")
     private Long request;
-    @OneToMany(mappedBy = "item" ,cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Booking> booking;
-    @OneToMany(mappedBy = "item" ,cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments;
 }

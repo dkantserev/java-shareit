@@ -5,16 +5,16 @@ import ru.practicum.shareit.comment.model.Comment;
 
 public class MapperComment {
     public static Comment toComment(CommentDto commentDto) {
-       Comment comment = new Comment();
-       comment.setId(commentDto.getId());
-       comment.setAuthorName(commentDto.getAuthorName());
-       comment.setItem(commentDto.getItem());
-       comment.setText(commentDto.getText());
-       comment.setCreated(commentDto.getCreated());
-       return comment;
+        Comment comment = new Comment();
+        comment.setId(commentDto.getId());
+        comment.setAuthorName(commentDto.getAuthorName());
+        comment.setItem(commentDto.getItem());
+        comment.setText(commentDto.getText());
+        comment.setCreated(commentDto.getCreated());
+        return comment;
     }
 
-    public static CommentDto commentDto(Comment comment){
+    public static CommentDto commentDto(Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())
                 .authorName(comment.getAuthorName())

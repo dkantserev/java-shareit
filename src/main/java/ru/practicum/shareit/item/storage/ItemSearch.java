@@ -8,7 +8,9 @@ import java.util.List;
 public interface ItemSearch {
 
     List<Item> findByOwner(Long owner);
+
     List<Item> findByNameContainingIgnoreCaseAndAvailableTrue(String text);
+
     List<Item> findByDescriptionContainingIgnoreCaseAndAvailableTrue(String text);
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Service
-public class UserServiceImp implements UserServiceInterface {
+public class UserServiceImp implements UserService {
 
     private final UserStorage storage;
 
@@ -30,6 +30,7 @@ public class UserServiceImp implements UserServiceInterface {
 
     @Override
     public List<UserDto> getAll() {
+
         List<UserDto> all = new ArrayList<>();
         storage.findAll().forEach(o -> all.add(MapperUserDto.toUserDto(o)));
         return all;
@@ -37,14 +38,15 @@ public class UserServiceImp implements UserServiceInterface {
 
     @Override
     public UserDto update(Long id, UserDtoUpdate userDto) {
+
         User user = storage.findById(id).orElse(null);
-        if(user==null){
+        if (user == null) {
             throw new UserNotFound("user not found");
         }
-        if(userDto.getEmail()!=null) {
+        if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
-        if(userDto.getName()!=null) {
+        if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
         storage.saveAndFlush(user);
@@ -53,7 +55,8 @@ public class UserServiceImp implements UserServiceInterface {
 
     @Override
     public UserDto get(Long id) {
-        if(storage.findById(id).isPresent()) {
+
+        if (storage.findById(id).isPresent()) {
             return MapperUserDto.toUserDto(storage.findById(id).get());
         }
         throw new UserNotFound("user not found");
