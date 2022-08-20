@@ -96,13 +96,16 @@ public class BookingServiceImp implements BookingService {
         if (bookingId.isPresent() && approved.isPresent() && userId.isPresent()) {
             if (checkForSetApproved(bookingId.get(), approved.get(), userId.get())) {
 
-                storage.findById(bookingId.get()).get().setStatus(BookingStatus.APPROVED);
+                storage.findById(bookingId.get()).orElseThrow(() -> new UserNotFound("not owner"))
+                        .setStatus(BookingStatus.APPROVED);
             } else {
 
-                storage.findById(bookingId.get()).get().setStatus(BookingStatus.REJECTED);
+                storage.findById(bookingId.get()).orElseThrow(() -> new UserNotFound("not owner"))
+                        .setStatus(BookingStatus.REJECTED);
             }
             storage.flush();
-            return MapperBookingDto.toBooking(storage.findById(bookingId.get()).get());
+            return MapperBookingDto.toBooking(storage.findById(bookingId.get())
+                    .orElseThrow(() -> new UserNotFound("not owner")));
         }
         throw new RuntimeException("bad query");
     }
