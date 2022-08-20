@@ -20,18 +20,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class BookingServiceImp {
+public class BookingServiceImp implements BookingService {
 
     private final BookingStorage storage;
     private final UserStorage userStorage;
     private final ItemStorage itemStorage;
 
-    public BookingServiceImp(BookingStorage storage, UserService userService, ItemService itemService, UserStorage userStorage, ItemStorage itemStorage) {
+    public BookingServiceImp(BookingStorage storage, UserService userService,
+                             ItemService itemService, UserStorage userStorage, ItemStorage itemStorage) {
         this.storage = storage;
         this.userStorage = userStorage;
         this.itemStorage = itemStorage;
     }
 
+    @Override
     public BookingDto add(Optional<BookingDto> booking, Optional<Long> userId) {
         if (booking.isPresent() && userId.isPresent()) {
             if (userStorage.findById(userId.get()).isEmpty()) {
@@ -40,19 +42,23 @@ public class BookingServiceImp {
             if (itemStorage.findById(booking.get().getItemId()).isEmpty()) {
                 throw new ItemNotFound("item not found");
             }
-            if (booking.get().getStart() != null && booking.get().getStart() != null && booking.get().getStart().isBefore(LocalDateTime.now())) {
+            if (booking.get().getStart() != null && booking.get().getStart() != null &&
+                    booking.get().getStart().isBefore(LocalDateTime.now())) {
                 throw new BookingException("time problem");
             }
-            if (booking.get().getStart() != null && booking.get().getStart() != null && booking.get().getEnd().isBefore(LocalDateTime.now())) {
+            if (booking.get().getStart() != null && booking.get().getStart() != null &&
+                    booking.get().getEnd().isBefore(LocalDateTime.now())) {
                 throw new BookingException("time problem");
             }
             if (itemStorage.findById(booking.get().getItemId()).get().getOwner().equals(userId.get())) {
                 throw new UserNotFound("you item owner");
             }
 
-            if (itemStorage.findById(booking.get().getItemId()).isPresent() && itemStorage.findById(booking.get().getItemId()).get().getAvailable().equals(true)) {
+            if (itemStorage.findById(booking.get().getItemId()).isPresent() &&
+                    itemStorage.findById(booking.get().getItemId()).get().getAvailable().equals(true)) {
                 booking.get().setStatus(BookingStatus.WAITING);
-                if (userStorage.findById(userId.get()).isPresent() && itemStorage.findById(booking.get().getItemId()).isPresent()) {
+                if (userStorage.findById(userId.get()).isPresent() &&
+                        itemStorage.findById(booking.get().getItemId()).isPresent()) {
                     booking.get().setBooker(userStorage.findById(userId.get()).get());
                     booking.get().setItem(itemStorage.findById(booking.get().getItemId()).get());
                 }
@@ -65,13 +71,15 @@ public class BookingServiceImp {
         throw new RuntimeException("bad query");
     }
 
+    @Override
     public BookingDto get(Optional<Long> bookingId, Optional<Long> userId) {
         Booking booking1 = new Booking();
 
         if (bookingId.isPresent() && userId.isPresent()) {
             if (storage.findById(bookingId.get()).isPresent()) {
                 booking1 = storage.findById(bookingId.get()).get();
-                if (Objects.equals(booking1.getItem().getOwner(), userId.get()) || Objects.equals(booking1.getBooker().getId(), userId.get())) {
+                if (Objects.equals(booking1.getItem().getOwner(), userId.get()) ||
+                        Objects.equals(booking1.getBooker().getId(), userId.get())) {
                     return MapperBookingDto.toBooking(booking1);
                 } else {
                     throw new UserNotFound("id is not the owner or booker");
@@ -82,34 +90,25 @@ public class BookingServiceImp {
         throw new RuntimeException("bad query");
     }
 
+    @Override
     public BookingDto setApproved(Optional<Long> bookingId, Optional<String> approved, Optional<Long> userId) {
+
         if (bookingId.isPresent() && approved.isPresent() && userId.isPresent()) {
-            if (storage.findById(bookingId.get()).isPresent()) {
-                if (Objects.equals(storage.findById(bookingId.get()).get().getItem().getOwner(), userId.get())) {
-                    if (approved.get().equals("true")) {
-                        if (storage.findById(bookingId.get()).get().getStatus().equals(BookingStatus.APPROVED)) {
-                            throw new BookingException("booking already confirmed");
-                        }
-                        storage.findById(bookingId.get()).get().setStatus(BookingStatus.APPROVED);
-                    }
-                    if (approved.get().equals("false")) {
-                        if (storage.findById(bookingId.get()).get().getStatus().equals(BookingStatus.REJECTED)) {
-                            throw new BookingException("rejected");
-                        }
-                        storage.findById(bookingId.get()).get().setStatus(BookingStatus.REJECTED);
-                    }
-                    storage.flush();
-                    return MapperBookingDto.toBooking(storage.findById(bookingId.get()).get());
-                } else {
-                    throw new UserNotFound("not owner");
-                }
+            if (checkForSetApproved(bookingId.get(), approved.get(), userId.get())) {
+
+                storage.findById(bookingId.get()).get().setStatus(BookingStatus.APPROVED);
             } else {
-                throw new RuntimeException("not found booking");
+
+                storage.findById(bookingId.get()).get().setStatus(BookingStatus.REJECTED);
             }
+            storage.flush();
+            return MapperBookingDto.toBooking(storage.findById(bookingId.get()).get());
         }
         throw new RuntimeException("bad query");
     }
 
+
+    @Override
     public List<BookingDto> getAll(Optional<Long> userId, String state) {
 
         if (userId.isEmpty()) {
@@ -124,10 +123,12 @@ public class BookingServiceImp {
             return all.stream().sorted(Comparator.comparing(BookingDto::getEnd).reversed()).collect(Collectors.toList());
         }
         if (state.equals("FUTURE")) {
-            return all.stream().filter(o -> o.getStart().isAfter(LocalDateTime.now())).sorted(Comparator.comparing(BookingDto::getEnd).reversed()).collect(Collectors.toList());
+            return all.stream().filter(o -> o.getStart().isAfter(LocalDateTime.now()))
+                    .sorted(Comparator.comparing(BookingDto::getEnd).reversed()).collect(Collectors.toList());
         }
         if (state.equals("PAST")) {
-            return all.stream().filter(o -> o.getEnd().isBefore(LocalDateTime.now())).sorted(Comparator.comparing(BookingDto::getEnd)).collect(Collectors.toList());
+            return all.stream().filter(o -> o.getEnd().isBefore(LocalDateTime.now()))
+                    .sorted(Comparator.comparing(BookingDto::getEnd)).collect(Collectors.toList());
         }
         if (state.equals("WAITING")) {
             return all.stream().filter(o -> o.getStatus().equals(BookingStatus.WAITING))
@@ -145,6 +146,7 @@ public class BookingServiceImp {
 
     }
 
+    @Override
     public List<BookingDto> getAllOwner(Optional<Long> userId, String state) {
 
         List<BookingDto> userBooking = new ArrayList<>();
@@ -161,25 +163,52 @@ public class BookingServiceImp {
             return userBooking;
         }
         if (state.equals("FUTURE")) {
-            storage.ownerBookingFuture(userId.get(), LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+            storage.ownerBookingFuture(userId.get(), LocalDateTime.now())
+                    .forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
             return userBooking;
         }
         if (state.equals("PAST")) {
-            storage.ownerBookingPast(userId.get(), LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+            storage.ownerBookingPast(userId.get(), LocalDateTime.now())
+                    .forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
             return userBooking;
         }
         if (state.equals("WAITING")) {
-            storage.ownerBookingWaiting(userId.get(), BookingStatus.WAITING, LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+            storage.ownerBookingWaiting(userId.get(), BookingStatus.WAITING,
+                    LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
             return userBooking;
         }
         if (state.equals("CURRENT")) {
-            storage.ownerBookingWaiting(userId.get(), BookingStatus.REJECTED, LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+            storage.ownerBookingWaiting(userId.get(), BookingStatus.REJECTED,
+                    LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
             return userBooking;
         }
         if (state.equals("REJECTED")) {
-            storage.ownerBookingWaiting(userId.get(), BookingStatus.REJECTED, LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+            storage.ownerBookingWaiting(userId.get(), BookingStatus.REJECTED,
+                    LocalDateTime.now()).forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
             return userBooking;
         }
         throw new StatusException("Unknown state: UNSUPPORTED_STATUS");
+    }
+
+    private Boolean checkForSetApproved(Long bookingId, String approved, Long userId) {
+
+        Boolean checkApproved = Boolean.parseBoolean(approved);
+        if (storage.findById(bookingId).isEmpty()) {
+            throw new RuntimeException("not found booking");
+        }
+        if (!Objects.equals(storage.findById(bookingId).get().getItem().getOwner(), userId)) {
+            throw new UserNotFound("not owner");
+        }
+        if (checkApproved) {
+            if (storage.findById(bookingId).get().getStatus().equals(BookingStatus.APPROVED)) {
+                throw new BookingException("booking already confirmed");
+            }
+        }
+        if (!checkApproved) {
+            if (storage.findById(bookingId).get().getStatus().equals(BookingStatus.REJECTED)) {
+                throw new BookingException("rejected");
+            }
+        }
+        return checkApproved;
     }
 }

@@ -18,9 +18,9 @@ import java.util.Optional;
 @Service
 public class CommentService {
 
-    public final CommentStorage storage;
-    public final BookingStorage booking;
-    public final UserStorage userStorage;
+    private final CommentStorage storage;
+    private final BookingStorage booking;
+    private final UserStorage userStorage;
     private final ItemStorage itemStorage;
 
     public CommentService(CommentStorage storage, BookingStorage booking, UserStorage userStorage, ItemStorage itemStorage) {

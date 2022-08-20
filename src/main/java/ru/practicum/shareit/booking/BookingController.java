@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exception.StatusException;
-import ru.practicum.shareit.booking.service.BookingServiceImp;
+import ru.practicum.shareit.booking.service.BookingService;
 
 
-import javax.validation.Valid;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,15 +21,15 @@ import java.util.Optional;
 @RequestMapping(path = "/bookings")
 public class BookingController {
 
-    private final BookingServiceImp bookingService;
+    private final BookingService bookingService;
 
-    public BookingController(BookingServiceImp bookingService) {
+    public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
 
     }
 
     @PostMapping
-    public BookingDto add(@Valid @RequestBody(required = false) Optional<BookingDto> booking,
+    public BookingDto add(@RequestBody(required = false) Optional<BookingDto> booking,
                           @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         log.info("add item " + booking + " user id" + userId);
         return bookingService.add(booking, userId);
