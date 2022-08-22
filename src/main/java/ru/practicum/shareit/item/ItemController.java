@@ -2,9 +2,13 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.comment.commentDto.CommentDto;
+import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.comment.service.CommentService;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
 import ru.practicum.shareit.item.service.ItemService;
+
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,9 +19,11 @@ import java.util.Optional;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
+    private final CommentService commentService;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, CommentService commentService) {
         this.itemService = itemService;
+        this.commentService = commentService;
     }
 
     @PostMapping
@@ -35,9 +41,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto get(@PathVariable Long itemId) {
+    public ItemDto get(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         log.info("get item id " + itemId);
-        return itemService.get(itemId);
+        return itemService.get(itemId, userId);
     }
 
     @GetMapping
@@ -49,6 +55,14 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam Optional<String> text) {
         text.ifPresent(s -> log.info("search " + s));
+        log.info("search " + text.get());
         return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
+                                 @PathVariable Optional<Long> itemId, @RequestBody Comment comment) {
+        log.info("addComment userID " + userId.get() + " itemId " + itemId.get());
+        return commentService.add(userId, itemId, comment);
     }
 }
