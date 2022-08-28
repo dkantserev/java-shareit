@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.model;
 
 import lombok.*;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.requests.model.ItemRequest;
 
 
 import javax.persistence.*;
@@ -27,8 +28,11 @@ public class User {
     @Email
     @Column(name = "email")
     private String email;
-    @OneToMany(mappedBy = "booker", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "booker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Booking> booking;
+    @OneToMany(mappedBy = "requestor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ItemRequest> requests;
+
 
 
 }

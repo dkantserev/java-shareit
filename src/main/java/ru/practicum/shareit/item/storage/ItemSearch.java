@@ -1,16 +1,18 @@
 package ru.practicum.shareit.item.storage;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
 public interface ItemSearch {
 
-    List<Item> findByOwner(Long owner);
+    Page<Item> findByOwner(Long owner, Pageable pageable);
 
-    List<Item> findByNameContainingIgnoreCaseAndAvailableTrue(String text);
+    Page<Item> findByNameContainingIgnoreCaseAndAvailableTrue(String text, Pageable pageable);
 
-    List<Item> findByDescriptionContainingIgnoreCaseAndAvailableTrue(String text);
+    Page<Item> findByDescriptionContainingIgnoreCaseAndAvailableTrue(String text,Pageable pageable);
 
 }

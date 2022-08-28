@@ -1,9 +1,11 @@
 package ru.practicum.shareit.item.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.requests.model.ItemRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -27,8 +29,10 @@ public class Item {
     @NotNull
     private Boolean available;
     private Long owner;
-    @Column(name = "request_id")
-    private Long request;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "requestr_id")
+    @JsonIgnore
+    private ItemRequest request;
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Booking> booking;
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -11,9 +11,9 @@ public interface ItemService {
 
     ItemDto update(ItemDtoUpdate itemDtoUpdate, Optional<Long> userId, Optional<Long> itemId);
 
-    List<ItemDto> getAllItemsUser(Optional<Long> userId);
+    List<ItemDto> getAllItemsUser(Optional<Long> userId, Optional<Long> from, Optional<Long> size);
 
-    List<ItemDto> search(Optional<String> text);
+    List<ItemDto> search(Optional<String> text, Optional<Long> from, Optional<Long> size);
 
     ItemDto get(Long itemId, Optional<Long> userId);
 

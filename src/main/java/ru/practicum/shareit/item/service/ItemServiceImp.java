@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.service;
 
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.MapperBookingDto;
 import ru.practicum.shareit.booking.exception.BookingException;
@@ -12,6 +15,8 @@ import ru.practicum.shareit.item.dto.ItemDtoUpdate;
 import ru.practicum.shareit.item.itemException.ItemNotFound;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.requests.exception.RequestNotFound;
+import ru.practicum.shareit.requests.storage.RequestStorage;
 import ru.practicum.shareit.user.UserExceptions.UserNotFound;
 import ru.practicum.shareit.user.userSevice.UserServiceImp;
 
@@ -26,12 +31,14 @@ public class ItemServiceImp implements ItemService {
     private final UserServiceImp userService;
     private final BookingStorage booking;
     private final CommentStorage comment;
+    private final RequestStorage requestStorage;
 
-    public ItemServiceImp(ItemStorage storage, UserServiceImp userService, BookingStorage booking, CommentStorage comment) {
+    public ItemServiceImp(ItemStorage storage, UserServiceImp userService, BookingStorage booking, CommentStorage comment, RequestStorage requestStorage) {
         this.storage = storage;
         this.userService = userService;
         this.booking = booking;
         this.comment = comment;
+        this.requestStorage = requestStorage;
     }
 
     @Override
@@ -43,9 +50,10 @@ public class ItemServiceImp implements ItemService {
             }
             Item item = MapperItemDto.toItem(itemDto.get());
             item.setOwner(userId.get());
+            if (itemDto.get().getRequestId() != null) {
+                item.setRequest(requestStorage.findById(itemDto.get().getRequestId()).orElseThrow(RequestNotFound::new));
+            }
             return MapperItemDto.toItemDto(storage.save(item));
-
-
         }
         throw new RuntimeException("user or item empty");
 
@@ -85,29 +93,44 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllItemsUser(Optional<Long> userId) {
+    public List<ItemDto> getAllItemsUser(Optional<Long> userId, Optional<Long> from, Optional<Long> size) {
         List<ItemDto> all = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id"));
         if (userId.isEmpty()) {
             storage.findAll().forEach(o -> all.add(MapperItemDto.toItemDto(o)));
             return all;
         }
+        if(from.isPresent()&&size.isPresent()&&from.get()>0&&size.get()>0){
+            pageable =PageRequest.of(from.get().intValue()/size.get().intValue(),size.get().intValue());
+        }
 
-        storage.findByOwner(userId.get()).forEach(o -> all.add(MapperItemDto.toItemDto(o)));
+        storage.findByOwner(userId.get(),pageable).forEach(o -> all.add(MapperItemDto.toItemDto(o)));
         all.forEach(o -> o.setComments(comment.getCommentByItemId(o.getId())));
         all.forEach(o -> fillBooking(o, userId.get()));
         return all.stream().sorted(Comparator.comparing(ItemDto::getId)).collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemDto> search(Optional<String> text) {
+    public List<ItemDto> search(Optional<String> text, Optional<Long> from, Optional<Long> size) {
+        Pageable pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id"));
+        int start = 0;
+        int l = 20;
+        if (from.isPresent() && size.isPresent()) {
+            if (from.get() > 0 && size.get() > 0) {
+                start = from.get().intValue() / size.get().intValue();
+            }
+            l = size.get().intValue();
+            pageable = PageRequest.of(start, l);
+        }
         List<ItemDto> all = new ArrayList<>();
         if (text.isPresent()) {
             if (text.get().isBlank()) {
                 return all;
             }
-            storage.findByNameContainingIgnoreCaseAndAvailableTrue(text.get().toLowerCase()).forEach(o -> all.add(MapperItemDto.toItemDto(o)));
-            storage.findByDescriptionContainingIgnoreCaseAndAvailableTrue(text.get().toLowerCase()).forEach(o -> all.add(MapperItemDto.toItemDto(o)));
-            return all.stream().distinct().collect(Collectors.toList());
+            storage.findByNameContainingIgnoreCaseAndAvailableTrue(text.get().toLowerCase(), pageable).forEach(o -> all.add(MapperItemDto.toItemDto(o)));
+            storage.findByDescriptionContainingIgnoreCaseAndAvailableTrue(text.get().toLowerCase(), pageable).forEach(o -> all.add(MapperItemDto.toItemDto(o)));
+            int finalStart = start;
+            return all.stream().distinct().filter(o -> o.getId() > finalStart).limit(l).collect(Collectors.toList());
         }
         throw new RuntimeException("");
     }

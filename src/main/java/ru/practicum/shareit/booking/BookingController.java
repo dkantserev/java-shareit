@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.exception.StatusException;
 import ru.practicum.shareit.booking.service.BookingService;
 
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,16 +48,23 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId, @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
+                                   @RequestParam(defaultValue = "ALL") String state,
+                                   @RequestParam(required = false) Optional<Long> from,
+                                   @RequestParam(required = false) Optional<Long> size) {
         log.info("get all booking userId " + userId);
-        return bookingService.getAll(userId, state);
+        return bookingService.getAll(userId, state,from,size);
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getAllOwner(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId, @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingDto> getAllOwner(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
+                                        @RequestParam(defaultValue = "ALL") String state,
+                                        @RequestParam(required = false) Optional<Long> from,
+                                        @RequestParam(required = false) Optional<Long> size) {
         log.info("get all booking ownerId " + userId);
-        return bookingService.getAllOwner(userId, state);
+        return bookingService.getAllOwner(userId, state,from,size);
     }
+
 
     @ExceptionHandler(StatusException.class)
     public ResponseEntity<Map<String, String>> handleIllegalUpdateObject(StatusException e) {
