@@ -28,8 +28,8 @@ public class MapperItemDto {
         item.setId(itemDto.getId());
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
-        item.setOwner(item.getOwner());
-        item.setRequest(item.getRequest());
+        item.setOwner(itemDto.getOwner());
+        item.setRequest(itemDto.getRequest());
         item.setAvailable(itemDto.getAvailable());
         item.setComments(itemDto.getComments());
 
