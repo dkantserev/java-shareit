@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-import org.springframework.data.domain.PageImpl;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,12 +13,9 @@ import ru.practicum.shareit.booking.exception.StatusException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.item.itemException.ItemNotFound;
-import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.requests.exception.RequestBadParams;
 import ru.practicum.shareit.user.UserExceptions.UserNotFound;
 import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.user.userSevice.UserService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -31,15 +28,14 @@ public class BookingServiceImp implements BookingService {
     private final UserStorage userStorage;
     private final ItemStorage itemStorage;
 
-    public BookingServiceImp(BookingStorage storage, UserService userService,
-                             ItemService itemService, UserStorage userStorage, ItemStorage itemStorage) {
+    public BookingServiceImp(BookingStorage storage, UserStorage userStorage, ItemStorage itemStorage) {
         this.storage = storage;
         this.userStorage = userStorage;
         this.itemStorage = itemStorage;
     }
 
     @Override
-    public BookingDto add(Optional<BookingDto> booking, Optional<Long> userId) {
+    public BookingDto add(Optional<BookingDto> booking, Optional<Long> userId, LocalDateTime localDateTime) {
         if (booking.isPresent() && userId.isPresent()) {
             if (userStorage.findById(userId.get()).isEmpty()) {
                 throw new UserNotFound("user not found");
@@ -48,11 +44,11 @@ public class BookingServiceImp implements BookingService {
                 throw new ItemNotFound("item not found");
             }
             if (booking.get().getStart() != null && booking.get().getStart() != null &&
-                    booking.get().getStart().isBefore(LocalDateTime.now())) {
+                    booking.get().getStart().isBefore(localDateTime)) {
                 throw new BookingException("time problem");
             }
             if (booking.get().getStart() != null && booking.get().getStart() != null &&
-                    booking.get().getEnd().isBefore(LocalDateTime.now())) {
+                    booking.get().getEnd().isBefore(localDateTime)) {
                 throw new BookingException("time problem");
             }
             if (itemStorage.findById(booking.get().getItemId()).get().getOwner().equals(userId.get())) {
@@ -69,7 +65,7 @@ public class BookingServiceImp implements BookingService {
                 }
                 Booking booking1 = MapperBookingDto.toBooking(booking.get());
                 storage.save(booking1);
-                return MapperBookingDto.toBooking(booking1);
+                return MapperBookingDto.toBookingDto(booking1);
             }
             throw new BookingException("item unavailabed");
         }
@@ -85,12 +81,12 @@ public class BookingServiceImp implements BookingService {
                 booking1 = storage.findById(bookingId.get()).get();
                 if (Objects.equals(booking1.getItem().getOwner(), userId.get()) ||
                         Objects.equals(booking1.getBooker().getId(), userId.get())) {
-                    return MapperBookingDto.toBooking(booking1);
+                    return MapperBookingDto.toBookingDto(booking1);
                 } else {
                     throw new UserNotFound("id is not the owner or booker");
                 }
             }
-            throw new UserNotFound("user not found");
+            throw new UserNotFound("booking not found");
         }
         throw new RuntimeException("bad query");
     }
@@ -109,7 +105,7 @@ public class BookingServiceImp implements BookingService {
                         .setStatus(BookingStatus.REJECTED);
             }
             storage.flush();
-            return MapperBookingDto.toBooking(storage.findById(bookingId.get())
+            return MapperBookingDto.toBookingDto(storage.findById(bookingId.get())
                     .orElseThrow(() -> new UserNotFound("not owner")));
         }
         throw new RuntimeException("bad query");
@@ -121,8 +117,8 @@ public class BookingServiceImp implements BookingService {
 
         Pageable pageable = PageRequest.of(0, 20);
         if (from.isPresent() && size.isPresent()) {
-            int start = size.get().intValue()/from.get().intValue();
-            pageable = PageRequest.of(start, size.get().intValue(), Sort.by(Sort.Direction.DESC,"start"));
+            int start = size.get().intValue() / from.get().intValue();
+            pageable = PageRequest.of(start, size.get().intValue(), Sort.by(Sort.Direction.DESC, "start"));
         }
         if (userId.isEmpty()) {
             throw new RuntimeException("need user id");
@@ -131,7 +127,7 @@ public class BookingServiceImp implements BookingService {
             throw new UserNotFound("user not found");
         }
         List<BookingDto> all = new ArrayList<>();
-        storage.findByBooker_id(userId.get(),pageable).getContent().forEach(o -> all.add(MapperBookingDto.toBooking(o)));
+        storage.findByBooker_id(userId.get(), pageable).getContent().forEach(o -> all.add(MapperBookingDto.toBookingDto(o)));
         if (state.equals("ALL")) {
             return all.stream().sorted(Comparator.comparing(BookingDto::getEnd).reversed()).collect(Collectors.toList());
         }
@@ -164,8 +160,8 @@ public class BookingServiceImp implements BookingService {
         Pageable pageable = PageRequest.of(0, 20);
         List<BookingDto> userBooking = new ArrayList<>();
         if (from.isPresent() && size.isPresent()) {
-            int start = size.get().intValue()/from.get().intValue();
-            pageable = PageRequest.of(start, size.get().intValue(), Sort.by(Sort.Direction.DESC,"start"));
+            int start = size.get().intValue() / from.get().intValue();
+            pageable = PageRequest.of(start, size.get().intValue(), Sort.by(Sort.Direction.DESC, "start"));
         }
 
         if (userId.isEmpty()) {
@@ -176,32 +172,32 @@ public class BookingServiceImp implements BookingService {
         }
 
         if (state.equals("ALL")) {
-            storage.ownerBooking(userId.get(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+            storage.ownerBooking(userId.get(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         if (state.equals("FUTURE")) {
             storage.ownerBookingFuture(userId.get(), LocalDateTime.now(), pageable).getContent()
-                    .forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+                    .forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         if (state.equals("PAST")) {
             storage.ownerBookingPast(userId.get(), LocalDateTime.now(), pageable).getContent()
-                    .forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+                    .forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         if (state.equals("WAITING")) {
             storage.ownerBookingWaiting(userId.get(), BookingStatus.WAITING,
-                    LocalDateTime.now(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+                    LocalDateTime.now(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         if (state.equals("CURRENT")) {
             storage.ownerBookingWaiting(userId.get(), BookingStatus.REJECTED,
-                    LocalDateTime.now(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+                    LocalDateTime.now(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         if (state.equals("REJECTED")) {
             storage.ownerBookingWaiting(userId.get(), BookingStatus.REJECTED,
-                    LocalDateTime.now(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBooking(o)));
+                    LocalDateTime.now(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         throw new StatusException("Unknown state: UNSUPPORTED_STATUS");

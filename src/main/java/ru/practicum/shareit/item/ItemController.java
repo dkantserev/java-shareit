@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.service.ItemService;
 
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,8 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto get(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         log.info("get item id " + itemId);
-        return itemService.get(itemId, userId);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        return itemService.get(itemId, userId,localDateTime);
     }
 
     @GetMapping
@@ -51,7 +53,8 @@ public class ItemController {
                                 @RequestParam(required = false) Optional<Long> from,
                                 @RequestParam(required = false) Optional<Long> size) {
         log.info("get all item user ");
-        return itemService.getAllItemsUser(userId,from,size);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        return itemService.getAllItemsUser(userId,from,size,localDateTime);
     }
 
     @GetMapping("/search")

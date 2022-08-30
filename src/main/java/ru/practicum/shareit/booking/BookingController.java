@@ -9,6 +9,7 @@ import ru.practicum.shareit.booking.exception.StatusException;
 import ru.practicum.shareit.booking.service.BookingService;
 
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,8 @@ public class BookingController {
     public BookingDto add(@RequestBody(required = false) Optional<BookingDto> booking,
                           @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         log.info("add item " + booking + " user id" + userId);
-        return bookingService.add(booking, userId);
+        LocalDateTime localDateTime =LocalDateTime.now();
+        return bookingService.add(booking, userId,localDateTime);
     }
 
     @GetMapping("/{bookingId}")
