@@ -1,6 +1,6 @@
 package ru.practicum.shareit.requests.service;
 
-import org.checkerframework.checker.units.qual.A;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import ru.practicum.shareit.item.model.Item;
+
 import ru.practicum.shareit.requests.MapperItemRequest;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.exception.RequestBadParams;
