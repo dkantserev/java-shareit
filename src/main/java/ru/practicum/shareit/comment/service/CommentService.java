@@ -30,12 +30,12 @@ public class CommentService {
         this.itemStorage = itemStorage;
     }
 
-    public CommentDto add(Optional<Long> userId, Optional<Long> itemId, Comment comment) {
+    public CommentDto add(Optional<Long> userId, Optional<Long> itemId, Comment comment,LocalDateTime localDateTime) {
 
         if (userId.isEmpty() || itemId.isEmpty()) {
             throw new RuntimeException("bad query");
         }
-        if (booking.checkForComment(userId.get(), LocalDateTime.now(), itemId.get()).isEmpty()) {
+        if (booking.checkForComment(userId.get(), localDateTime, itemId.get()).isEmpty()) {
             throw new BookingException("user did not take the item");
         }
         if (comment.getText().isBlank()) {
@@ -44,7 +44,7 @@ public class CommentService {
         if (userStorage.findById(userId.get()).isEmpty() || itemStorage.findById(itemId.get()).isEmpty()) {
             throw new UserNotFound("user not found or item");
         }
-        comment.setCreated(LocalDateTime.now());
+        comment.setCreated(localDateTime);
         comment.setAuthorName(userStorage.findById(userId.get()).get().getName());
         comment.setItem(itemStorage.findById(itemId.get()).get());
         return MapperComment.commentDto(storage.save(comment));

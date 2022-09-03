@@ -35,7 +35,6 @@ public class RequestServiceImpl implements RequestService {
         if(userStorage.findById(userId.get()).isEmpty()){
             throw new UserNotFound("user not found");
         }
-        request.get().setCreated(LocalDateTime.now());
         request.get().setRequestor(userStorage.findById(userId.get()).get());
         request.get().setCreated(LocalDateTime.now());
         return MapperItemRequest.toDto(requestStorage.save(MapperItemRequest.toModel(request.get())));

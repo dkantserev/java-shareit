@@ -74,7 +74,7 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public BookingDto get(Optional<Long> bookingId, Optional<Long> userId) {
-        Booking booking1 = new Booking();
+        Booking booking1 ;
 
         if (bookingId.isPresent() && userId.isPresent()) {
             if (storage.findById(bookingId.get()).isPresent()) {
@@ -117,7 +117,10 @@ public class BookingServiceImp implements BookingService {
 
         Pageable pageable = PageRequest.of(0, 20);
         if (from.isPresent() && size.isPresent()) {
-            int start = size.get().intValue() / from.get().intValue();
+            if(from.get()<0||size.get()<0){
+                throw new RuntimeException("negative param");
+            }
+            int start = from.get().intValue() / size.get().intValue();
             pageable = PageRequest.of(start, size.get().intValue(), Sort.by(Sort.Direction.DESC, "start"));
         }
         if (userId.isEmpty()) {
@@ -156,11 +159,14 @@ public class BookingServiceImp implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllOwner(Optional<Long> userId, String state, Optional<Long> from, Optional<Long> size) {
+    public List<BookingDto> getAllOwner(Optional<Long> userId, String state, Optional<Long> from, Optional<Long> size, LocalDateTime localDateTime) {
         Pageable pageable = PageRequest.of(0, 20);
         List<BookingDto> userBooking = new ArrayList<>();
         if (from.isPresent() && size.isPresent()) {
-            int start = size.get().intValue() / from.get().intValue();
+            if(from.get()<0||size.get()<0){
+                throw new RuntimeException("negative param");
+            }
+            int start = from.get().intValue() / size.get().intValue();
             pageable = PageRequest.of(start, size.get().intValue(), Sort.by(Sort.Direction.DESC, "start"));
         }
 
@@ -176,28 +182,28 @@ public class BookingServiceImp implements BookingService {
             return userBooking;
         }
         if (state.equals("FUTURE")) {
-            storage.ownerBookingFuture(userId.get(), LocalDateTime.now(), pageable).getContent()
+            storage.ownerBookingFuture(userId.get(), localDateTime, pageable).getContent()
                     .forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         if (state.equals("PAST")) {
-            storage.ownerBookingPast(userId.get(), LocalDateTime.now(), pageable).getContent()
+            storage.ownerBookingPast(userId.get(), localDateTime, pageable).getContent()
                     .forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         if (state.equals("WAITING")) {
             storage.ownerBookingWaiting(userId.get(), BookingStatus.WAITING,
-                    LocalDateTime.now(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
+                    localDateTime, pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         if (state.equals("CURRENT")) {
             storage.ownerBookingWaiting(userId.get(), BookingStatus.REJECTED,
-                    LocalDateTime.now(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
+                    localDateTime, pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         if (state.equals("REJECTED")) {
             storage.ownerBookingWaiting(userId.get(), BookingStatus.REJECTED,
-                    LocalDateTime.now(), pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
+                    localDateTime, pageable).getContent().forEach(o -> userBooking.add(MapperBookingDto.toBookingDto(o)));
             return userBooking;
         }
         throw new StatusException("Unknown state: UNSUPPORTED_STATUS");

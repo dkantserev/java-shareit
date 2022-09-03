@@ -10,6 +10,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class BookingController {
     public BookingDto add(@RequestBody(required = false) Optional<BookingDto> booking,
                           @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         log.info("add item " + booking + " user id" + userId);
-        LocalDateTime localDateTime =LocalDateTime.now();
+        LocalDateTime localDateTime =LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         return bookingService.add(booking, userId,localDateTime);
     }
 
@@ -64,7 +65,8 @@ public class BookingController {
                                         @RequestParam(required = false) Optional<Long> from,
                                         @RequestParam(required = false) Optional<Long> size) {
         log.info("get all booking ownerId " + userId);
-        return bookingService.getAllOwner(userId, state,from,size);
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return bookingService.getAllOwner(userId, state,from,size,localDateTime);
     }
 
 
