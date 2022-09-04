@@ -64,6 +64,7 @@ class ItemServiceImpTest {
 
     @Test
     public void thenAdd_WhenPositive() {
+
         itemDto.setRequestId(2L);
         Mockito
                 .when(userServiceImp.get(1L))
@@ -86,6 +87,7 @@ class ItemServiceImpTest {
 
     @Test
     public void thenAddAndUserNotFound_WhenThrow() {
+
         itemDto.setRequestId(2L);
         Mockito
                 .when(userServiceImp.get(1L))
@@ -101,6 +103,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenEmptyArgument_thenException() {
+
         Optional<Long> id = Optional.empty();
         Optional<ItemDto> i = Optional.empty();
         assertThrows(RuntimeException.class, () -> itemServiceImp.add(i, id));
@@ -109,6 +112,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenUpdateNotFoundItem_thenException() {
+
         Optional<Item> i = Optional.empty();
         ItemDtoUpdate id = new ItemDtoUpdate();
         Optional<Long> userId = Optional.of(1L);
@@ -121,6 +125,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenUpdateNotFoundUser_thenException() {
+
         Item i = new Item();
         ItemDtoUpdate id = new ItemDtoUpdate();
         Optional<Long> userId = Optional.of(1L);
@@ -136,6 +141,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenUpdateNoOwner_thenException() {
+
         Item i = new Item();
         i.setOwner(2L);
         ItemDtoUpdate id = new ItemDtoUpdate();
@@ -161,6 +167,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenUpdate_thenPositive() {
+
         Item i = new Item();
         i.setOwner(1L);
         ItemDtoUpdate id = new ItemDtoUpdate();
@@ -188,6 +195,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenGetAndBadParam_thenNegative() {
+
         Long id = 1L;
         Optional<Long> userId = Optional.empty();
 
@@ -199,6 +207,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenGet_thenPositive() {
+
         Item i = new Item();
         i.setOwner(1L);
         Long id = 1L;
@@ -230,6 +239,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenGetAllAndEmptyUserId_thePositive() {
+
         List<Item> l = new ArrayList<>();
         l.add(item);
         Optional<Long> userId = Optional.empty();
@@ -250,6 +260,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenGerAllAndTrueOwnerId_thenPositive() {
+
         item.setId(1L);
         itemDto.setId(1L);
         itemDto.setOwner(1L);
@@ -289,6 +300,7 @@ class ItemServiceImpTest {
 
     @Test
     public void whenSearchAndEmptyText_thenException() {
+
         Optional<Long> from = Optional.of(2L);
         Optional<Long> size = Optional.of(3L);
         Optional<String> text = Optional.empty();
@@ -297,14 +309,16 @@ class ItemServiceImpTest {
 
     @Test
     public void whenSearchAndBlankText_thenException() {
+
         Optional<Long> from = Optional.of(2L);
         Optional<Long> size = Optional.of(3L);
         Optional<String> text = Optional.of("");
-        assertEquals(itemServiceImp.search(text,from,size).size(),0);
+        assertEquals(itemServiceImp.search(text, from, size).size(), 0);
     }
 
     @Test
     public void whenSearch_thenPositive() {
+
         item.setId(1L);
         itemDto.setId(1L);
         Optional<Long> from = Optional.of(2L);

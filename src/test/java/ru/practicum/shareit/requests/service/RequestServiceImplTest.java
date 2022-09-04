@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class RequestServiceImplTest {
+
     @Mock
     UserStorage userStorage;
     @Mock
@@ -47,6 +48,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenAddAndEmptyParam_thenException() {
+
         request = Optional.empty();
         userId = Optional.empty();
         assertThrows(RequestBadParams.class, () -> requestService.add(request, userId));
@@ -54,6 +56,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenAddAndUserNotFound_thenException() {
+
         request = Optional.ofNullable(itemRequestDto);
         userId = Optional.of(1L);
         Mockito
@@ -64,6 +67,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenAdd_thenPositive() {
+
         request = Optional.ofNullable(itemRequestDto);
         userId = Optional.of(1L);
         Mockito
@@ -79,11 +83,13 @@ class RequestServiceImplTest {
 
     @Test
     public void whenGetAndEmptyParam_thenException() {
+
         userId = Optional.empty();
         assertThrows(RequestBadParams.class, () -> requestService.get(userId));
     }
 
     @Test
+
     public void whenGetAndUserNotFound_thenException() {
         userId = Optional.of(1L);
         Mockito
@@ -94,6 +100,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenGet_thenPositive() {
+
         userId = Optional.of(1L);
         Mockito
                 .when(userStorage.findById(1L))
@@ -104,6 +111,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenGetAllAndEmptyParam_thenException() {
+
         userId = Optional.empty();
         Optional<Long> from = Optional.empty();
         Optional<Long> size = Optional.empty();
@@ -112,6 +120,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenGetAllAndNegativeParam_thenException() {
+
         userId = Optional.empty();
         Optional<Long> from = Optional.of(-1L);
         Optional<Long> size = Optional.of(-3L);
@@ -120,6 +129,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenGetAll_thenPositive() {
+
         userId = Optional.of(1L);
         Optional<Long> from = Optional.of(1L);
         Optional<Long> size = Optional.of(3L);
@@ -143,6 +153,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenGetForIdWithEmptyParam_thenException() {
+
         userId = Optional.empty();
         Long requestId = 1L;
         assertThrows(RequestBadParams.class, () -> requestService.getForId(requestId, userId));
@@ -150,6 +161,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenGetForIdUserNotFound_thenException() {
+
         userId = Optional.of(1L);
         Long requestId = 1L;
         Mockito
@@ -160,6 +172,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenGetForIdRequestNotFound_thenException() {
+
         userId = Optional.of(1L);
         Long requestId = 1L;
         Mockito
@@ -174,6 +187,7 @@ class RequestServiceImplTest {
 
     @Test
     public void whenGetForId_thenPositive() {
+
         userId = Optional.of(1L);
         Long requestId = 1L;
         requests = Optional.of(itemRequest);

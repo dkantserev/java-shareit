@@ -31,8 +31,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
+
     @Mock
     CommentStorage storage;
     @Mock
@@ -52,31 +54,33 @@ class CommentServiceTest {
     CommentDto commentDto = CommentDto.builder().build();
 
 
-
     @Test
-    public void whenAddWithEmptyParam_thenException(){
-        java.util.Optional<Long> userId =Optional.empty();
-        Optional<Long> itemId =Optional.empty();
-        assertThrows(RuntimeException.class,()->commentService.add(userId,itemId,comment, LocalDateTime.now(clock)));
+    public void whenAddWithEmptyParam_thenException() {
+
+        java.util.Optional<Long> userId = Optional.empty();
+        Optional<Long> itemId = Optional.empty();
+        assertThrows(RuntimeException.class, () -> commentService.add(userId, itemId, comment, LocalDateTime.now(clock)));
 
     }
 
     @Test
-    public void whenAddAndEmptyBooking_thenException(){
-        Optional<Long> userId =Optional.of(1L);
-        Optional<Long> itemId =Optional.of(1L);
+    public void whenAddAndEmptyBooking_thenException() {
+
+        Optional<Long> userId = Optional.of(1L);
+        Optional<Long> itemId = Optional.of(1L);
         List<Booking> bookingList = Collections.emptyList();
         Mockito
-                .when(booking.checkForComment(1L,LocalDateTime.now(clock),1L))
-                                .thenReturn(bookingList);
-        assertThrows(BookingException.class,()->commentService.add(userId,itemId,comment, LocalDateTime.now(clock)));
+                .when(booking.checkForComment(1L, LocalDateTime.now(clock), 1L))
+                .thenReturn(bookingList);
+        assertThrows(BookingException.class, () -> commentService.add(userId, itemId, comment, LocalDateTime.now(clock)));
 
     }
 
     @Test
-    public void whenAdd_thenPositive(){
-        Optional<Long> userId =Optional.of(1L);
-        Optional<Long> itemId =Optional.of(1L);
+    public void whenAdd_thenPositive() {
+
+        Optional<Long> userId = Optional.of(1L);
+        Optional<Long> itemId = Optional.of(1L);
         List<Booking> bookingList = new ArrayList<>();
         bookingList.add(bookingModel);
         comment.setText("rr");
@@ -84,30 +88,30 @@ class CommentServiceTest {
         user.setId(1L);
 
         Mockito
-                .when(booking.checkForComment(1L,LocalDateTime.now(clock),1L))
+                .when(booking.checkForComment(1L, LocalDateTime.now(clock), 1L))
                 .thenReturn(bookingList);
         Mockito
                 .when(userStorage.findById(1L))
-                        .thenReturn(Optional.ofNullable(user));
+                .thenReturn(Optional.ofNullable(user));
         Mockito
                 .when(itemStorage.findById(1L))
                 .thenReturn(Optional.ofNullable(item));
         Mockito
                 .when(storage.save(comment))
                 .thenReturn(comment);
-        try(MockedStatic<MapperComment> mapper = Mockito.mockStatic(MapperComment.class)){
-            mapper.when(()->MapperComment.commentDto(comment)).thenReturn(commentDto);
-            mapper.when(()->MapperComment.toComment(commentDto)).thenReturn(comment);
-            commentService.add(userId,itemId,comment,LocalDateTime.now(clock));
-            Mockito.verify(storage,Mockito.times(1)).save(comment);
+        try (MockedStatic<MapperComment> mapper = Mockito.mockStatic(MapperComment.class)) {
+            mapper.when(() -> MapperComment.commentDto(comment)).thenReturn(commentDto);
+            mapper.when(() -> MapperComment.toComment(commentDto)).thenReturn(comment);
+            commentService.add(userId, itemId, comment, LocalDateTime.now(clock));
+            Mockito.verify(storage, Mockito.times(1)).save(comment);
         }
 
     }
 
     @Test
-    public void whenTextBlank_theException(){
-        Optional<Long> userId =Optional.of(1L);
-        Optional<Long> itemId =Optional.of(1L);
+    public void whenTextBlank_theException() {
+        Optional<Long> userId = Optional.of(1L);
+        Optional<Long> itemId = Optional.of(1L);
         List<Booking> bookingList = new ArrayList<>();
         bookingList.add(bookingModel);
         comment.setText(" ");
@@ -115,15 +119,15 @@ class CommentServiceTest {
         user.setId(1L);
 
         Mockito
-                .when(booking.checkForComment(1L,LocalDateTime.now(clock),1L))
+                .when(booking.checkForComment(1L, LocalDateTime.now(clock), 1L))
                 .thenReturn(bookingList);
-        assertThrows(BookingException.class,()->commentService.add(userId,itemId,comment,LocalDateTime.now(clock)));
+        assertThrows(BookingException.class, () -> commentService.add(userId, itemId, comment, LocalDateTime.now(clock)));
     }
 
     @Test
-    public void whenTextUserNotFound_theException(){
-        Optional<Long> userId =Optional.of(1L);
-        Optional<Long> itemId =Optional.of(1L);
+    public void whenTextUserNotFound_theException() {
+        Optional<Long> userId = Optional.of(1L);
+        Optional<Long> itemId = Optional.of(1L);
         List<Booking> bookingList = new ArrayList<>();
         bookingList.add(bookingModel);
         comment.setText(" f");
@@ -131,18 +135,18 @@ class CommentServiceTest {
         user.setId(1L);
 
         Mockito
-                .when(booking.checkForComment(1L,LocalDateTime.now(clock),1L))
+                .when(booking.checkForComment(1L, LocalDateTime.now(clock), 1L))
                 .thenReturn(bookingList);
         Mockito
                 .when(userStorage.findById(1L))
                 .thenReturn(Optional.empty());
-        assertThrows(UserNotFound.class,()->commentService.add(userId,itemId,comment,LocalDateTime.now(clock)));
+        assertThrows(UserNotFound.class, () -> commentService.add(userId, itemId, comment, LocalDateTime.now(clock)));
     }
 
     @Test
-    public void whenTextItemNotFound_theException(){
-        Optional<Long> userId =Optional.of(1L);
-        Optional<Long> itemId =Optional.of(1L);
+    public void whenTextItemNotFound_theException() {
+        Optional<Long> userId = Optional.of(1L);
+        Optional<Long> itemId = Optional.of(1L);
         List<Booking> bookingList = new ArrayList<>();
         bookingList.add(bookingModel);
         comment.setText(" f");
@@ -150,7 +154,7 @@ class CommentServiceTest {
         user.setId(1L);
 
         Mockito
-                .when(booking.checkForComment(1L,LocalDateTime.now(clock),1L))
+                .when(booking.checkForComment(1L, LocalDateTime.now(clock), 1L))
                 .thenReturn(bookingList);
         Mockito
                 .when(userStorage.findById(1L))
@@ -158,7 +162,7 @@ class CommentServiceTest {
         Mockito
                 .when(itemStorage.findById(1L))
                 .thenReturn(Optional.empty());
-        assertThrows(UserNotFound.class,()->commentService.add(userId,itemId,comment,LocalDateTime.now(clock)));
+        assertThrows(UserNotFound.class, () -> commentService.add(userId, itemId, comment, LocalDateTime.now(clock)));
     }
 
 }

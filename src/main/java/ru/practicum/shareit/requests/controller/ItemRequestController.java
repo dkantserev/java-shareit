@@ -21,26 +21,26 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDto add(@Valid @RequestBody Optional<ItemRequestDto> request,
-                              @RequestHeader("X-Sharer-User-Id") Optional<Long> userId){
-        return requestService.add(request,userId);
+                              @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
+        return requestService.add(request, userId);
     }
 
     @GetMapping
-    public List<ItemRequestDto> get(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId){
+    public List<ItemRequestDto> get(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         return requestService.get(userId);
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestDto get(@PathVariable Long requestId,
-                              @RequestHeader("X-Sharer-User-Id") Optional<Long> userId){
-        return requestService.getForId(requestId,userId);
+                              @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
+        return requestService.getForId(requestId, userId);
     }
 
     @GetMapping("all")
     public List<ItemRequestDto> getAll(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
                                        @RequestParam Optional<Long> from,
-                                       @RequestParam Optional<Long> size){
-        return requestService.getAll(userId,from,size);
+                                       @RequestParam Optional<Long> size) {
+        return requestService.getAll(userId, from, size);
     }
 
 }

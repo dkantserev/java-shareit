@@ -23,11 +23,11 @@ public class Booking {
     private Long id;
     private LocalDateTime start;
     private LocalDateTime endBooking;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     @JsonIgnore
     private Item item;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "booker_id")
     @JsonIgnore
     private User booker;

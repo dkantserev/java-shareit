@@ -1,6 +1,6 @@
 package ru.practicum.shareit.requests.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,13 +15,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.service.RequestService;
-import ru.practicum.shareit.user.UserController;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,6 +44,7 @@ class ItemRequestControllerTest {
 
     @Test
     void add() throws Exception {
+
         itemRequestDto.setCreated(localDateTime);
         itemRequestDto.setDescription("ggg");
         Mockito
@@ -57,6 +58,7 @@ class ItemRequestControllerTest {
 
     @Test
     void get() throws Exception {
+
         itemRequestDto.setCreated(localDateTime);
         itemRequestDto.setDescription("ggg");
         Mockito
@@ -69,6 +71,7 @@ class ItemRequestControllerTest {
 
     @Test
     void testGet() throws Exception {
+
         itemRequestDto.setCreated(localDateTime);
         itemRequestDto.setDescription("ggg");
         Mockito
@@ -81,6 +84,7 @@ class ItemRequestControllerTest {
 
     @Test
     void getAll() throws Exception {
+
         itemRequestDto.setCreated(localDateTime);
         itemRequestDto.setDescription("ggg");
         Mockito

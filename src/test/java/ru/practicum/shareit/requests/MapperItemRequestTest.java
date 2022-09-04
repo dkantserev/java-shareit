@@ -19,13 +19,15 @@ class MapperItemRequestTest {
     Long id = 1L;
     String description = "fff";
     User requestor = new User();
-    LocalDateTime created = LocalDateTime.of(1111, 1, 1, 1, 1, 1, 1);
+    LocalDateTime created = LocalDateTime.of(1111, 1, 1,
+            1, 1, 1, 1);
     ItemDto itemDto = ItemDto.builder().build();
     Item item = new Item();
 
 
     @Test
     void toDto() {
+
         List<Item> items = new ArrayList<>();
         items.add(item);
         ItemRequest itemRequest = new ItemRequest();
@@ -44,6 +46,7 @@ class MapperItemRequestTest {
 
     @Test
     void toModel() {
+
         List<ItemDto> itemsDto = new ArrayList<>();
         itemsDto.add(itemDto);
         ItemRequestDto itemRequestDto = ItemRequestDto.builder().build();

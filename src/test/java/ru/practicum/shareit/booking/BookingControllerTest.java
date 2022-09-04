@@ -24,7 +24,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -52,6 +52,7 @@ class BookingControllerTest {
 
     @BeforeEach
     void fill() {
+
         bookingDto.setId(1L);
         userId = 1L;
         bookingDto.setStatus(BookingStatus.WAITING);
@@ -73,6 +74,7 @@ class BookingControllerTest {
 
     @Test
     void get() throws Exception {
+
         Mockito
                 .when(bookingService.get(Optional.of(1L), Optional.of(1L)))
                 .thenReturn(bookingDto);
@@ -83,6 +85,7 @@ class BookingControllerTest {
 
     @Test
     void setApproved() throws Exception {
+
         Mockito
                 .when(bookingService.setApproved(Optional.of(1L), Optional.of("true"), Optional.of(1L)))
                 .thenReturn(bookingDto);
@@ -94,6 +97,7 @@ class BookingControllerTest {
 
     @Test
     void getAll() throws Exception {
+
         Mockito
                 .when(bookingService.getAll(Optional.of(1L), "ALL", Optional.of(1L),
                         Optional.of(2L)))
@@ -107,9 +111,10 @@ class BookingControllerTest {
 
     @Test
     void getAllOwner() throws Exception {
+
         Mockito
                 .when(bookingService.getAllOwner(Optional.of(1L), "ALL", Optional.of(1L),
-                        Optional.of(2L), LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+                        Optional.of(2L), LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
                 .thenReturn(List.of(bookingDto));
         mockMvc.perform(MockMvcRequestBuilders.get("/bookings/owner").header("X-Sharer-User-Id",
                         "1").param("state", "ALL").param("from",

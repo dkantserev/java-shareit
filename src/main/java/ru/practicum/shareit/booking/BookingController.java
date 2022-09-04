@@ -33,8 +33,8 @@ public class BookingController {
     public BookingDto add(@RequestBody(required = false) Optional<BookingDto> booking,
                           @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         log.info("add item " + booking + " user id" + userId);
-        LocalDateTime localDateTime =LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        return bookingService.add(booking, userId,localDateTime);
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return bookingService.add(booking, userId, localDateTime);
     }
 
     @GetMapping("/{bookingId}")
@@ -56,7 +56,7 @@ public class BookingController {
                                    @RequestParam(required = false) Optional<Long> from,
                                    @RequestParam(required = false) Optional<Long> size) {
         log.info("get all booking userId " + userId);
-        return bookingService.getAll(userId, state,from,size);
+        return bookingService.getAll(userId, state, from, size);
     }
 
     @GetMapping("/owner")
@@ -65,8 +65,8 @@ public class BookingController {
                                         @RequestParam(required = false) Optional<Long> from,
                                         @RequestParam(required = false) Optional<Long> size) {
         log.info("get all booking ownerId " + userId);
-        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        return bookingService.getAllOwner(userId, state,from,size,localDateTime);
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        return bookingService.getAllOwner(userId, state, from, size, localDateTime);
     }
 
 

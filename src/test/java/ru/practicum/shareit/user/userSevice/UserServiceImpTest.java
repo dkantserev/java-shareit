@@ -33,6 +33,7 @@ class UserServiceImpTest {
 
     @Test
     public void whenGet_ThenPositive() { //объект найден
+
         user.setId(1L);
         Mockito
                 .when(userStorage.findById(1L))
@@ -42,6 +43,7 @@ class UserServiceImpTest {
 
     @Test
     public void whenGet_ThenNegative() { //объект ненайден - ошибка
+
         user.setId(1L);
         Mockito
                 .when(userStorage.findById(1L))
@@ -51,6 +53,7 @@ class UserServiceImpTest {
 
     @Test
     public void whenADD_ThenPositive() { //объект добавлен
+
         user.setId(1L);
         UserDto userDto1 = MapperUserDto.toUserDto(user);
         try (MockedStatic<MapperUserDto> utilities = Mockito.mockStatic(MapperUserDto.class)) {
@@ -64,6 +67,7 @@ class UserServiceImpTest {
 
     @Test
     public void whenGetAll_ThenPositive() { //список объектов найден
+
         user.setId(1L);
         UserDto userDto1 = MapperUserDto.toUserDto(user);
         try (MockedStatic<MapperUserDto> utilities = Mockito.mockStatic(MapperUserDto.class)) {
@@ -82,12 +86,14 @@ class UserServiceImpTest {
 
     @Test
     public void whenDelete_ThenPositive() { //  объект удален
+
         userServiceImp.delete(1L);
         Mockito.verify(userStorage, Mockito.times(1)).deleteById(1L);
     }
 
     @Test
     public void whenUpdate_ThenPositive() { //объект обнавлен
+
         user.setId(1L);
         user.setName("t");
         user.setEmail("tt@mail.ru");
@@ -111,6 +117,7 @@ class UserServiceImpTest {
 
     @Test
     public void whenUpdate_ThenNegative() { //объект не найден
+
         user.setId(1L);
         user.setName("t");
         user.setEmail("tt@mail.ru");

@@ -8,7 +8,7 @@ public class MapperItemDto {
 
     public static ItemDto toItemDto(Item item) {
 
-        ItemDto ret= ItemDto.builder().id(item.getId())
+        ItemDto ret = ItemDto.builder().id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .owner(item.getOwner())
@@ -16,7 +16,7 @@ public class MapperItemDto {
                 .available(item.getAvailable())
                 .comments(item.getComments())
                 .build();
-        if(item.getRequest()!=null){
+        if (item.getRequest() != null) {
             ret.setRequestId(item.getRequest().getId());
         }
         return ret;

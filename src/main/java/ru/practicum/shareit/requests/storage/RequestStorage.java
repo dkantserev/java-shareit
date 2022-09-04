@@ -6,4 +6,5 @@ import ru.practicum.shareit.requests.model.ItemRequest;
 
 @Repository
 public interface RequestStorage extends JpaRepository<ItemRequest,Long>, RequestSearch {
+
 }

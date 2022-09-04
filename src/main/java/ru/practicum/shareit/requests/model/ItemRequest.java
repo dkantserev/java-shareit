@@ -26,12 +26,12 @@ public class ItemRequest {
     private Long id;
     @NotEmpty
     private String description;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "requestor_id")
     @JsonIgnore
     private User requestor;
     @NotNull
     private LocalDateTime created;
-    @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "request", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Item> items;
 }

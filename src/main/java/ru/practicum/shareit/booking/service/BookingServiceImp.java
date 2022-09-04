@@ -74,7 +74,7 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public BookingDto get(Optional<Long> bookingId, Optional<Long> userId) {
-        Booking booking1 ;
+        Booking booking1;
 
         if (bookingId.isPresent() && userId.isPresent()) {
             if (storage.findById(bookingId.get()).isPresent()) {
@@ -117,7 +117,7 @@ public class BookingServiceImp implements BookingService {
 
         Pageable pageable = PageRequest.of(0, 20);
         if (from.isPresent() && size.isPresent()) {
-            if(from.get()<0||size.get()<0){
+            if (from.get() < 0 || size.get() < 0) {
                 throw new RuntimeException("negative param");
             }
             int start = from.get().intValue() / size.get().intValue();
@@ -163,7 +163,7 @@ public class BookingServiceImp implements BookingService {
         Pageable pageable = PageRequest.of(0, 20);
         List<BookingDto> userBooking = new ArrayList<>();
         if (from.isPresent() && size.isPresent()) {
-            if(from.get()<0||size.get()<0){
+            if (from.get() < 0 || size.get() < 0) {
                 throw new RuntimeException("negative param");
             }
             int start = from.get().intValue() / size.get().intValue();

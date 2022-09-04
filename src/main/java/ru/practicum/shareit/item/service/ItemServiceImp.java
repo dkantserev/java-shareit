@@ -93,20 +93,20 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllItemsUser(Optional<Long> userId, Optional<Long> from, Optional<Long> size,LocalDateTime localDateTime) {
+    public List<ItemDto> getAllItemsUser(Optional<Long> userId, Optional<Long> from, Optional<Long> size, LocalDateTime localDateTime) {
         List<ItemDto> all = new ArrayList<>();
         Pageable pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id"));
         if (userId.isEmpty()) {
             storage.findAll().forEach(o -> all.add(MapperItemDto.toItemDto(o)));
             return all;
         }
-        if(from.isPresent()&&size.isPresent()&&from.get()>0&&size.get()>0){
-            pageable =PageRequest.of(from.get().intValue()/size.get().intValue(),size.get().intValue());
+        if (from.isPresent() && size.isPresent() && from.get() > 0 && size.get() > 0) {
+            pageable = PageRequest.of(from.get().intValue() / size.get().intValue(), size.get().intValue());
         }
 
-        storage.findByOwner(userId.get(),pageable).forEach(o -> all.add(MapperItemDto.toItemDto(o)));
+        storage.findByOwner(userId.get(), pageable).forEach(o -> all.add(MapperItemDto.toItemDto(o)));
         all.forEach(o -> o.setComments(comment.getCommentByItemId(o.getId())));
-        all.forEach(o -> fillBooking(o, userId.get(),localDateTime));
+        all.forEach(o -> fillBooking(o, userId.get(), localDateTime));
         return all.stream().sorted(Comparator.comparing(ItemDto::getId)).collect(Collectors.toList());
     }
 
@@ -136,7 +136,7 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public ItemDto get(Long itemId, Optional<Long> userId,LocalDateTime localDateTime) {
+    public ItemDto get(Long itemId, Optional<Long> userId, LocalDateTime localDateTime) {
 
 
         if (storage.findById(itemId).isPresent() && userId.isPresent()) {
@@ -154,7 +154,7 @@ public class ItemServiceImp implements ItemService {
         throw new ItemNotFound("item not found");
     }
 
-    private void fillBooking(ItemDto itemDto, Long userId,LocalDateTime localDateTime) {
+    private void fillBooking(ItemDto itemDto, Long userId, LocalDateTime localDateTime) {
         Boolean owner = Objects.equals(storage.findById(itemDto.getId()).get().getOwner(), userId);
         if (booking.findFirstByItem_idAndEndBookingBefore(itemDto.getId(), localDateTime).isPresent() && owner) {
             itemDto.setLastBooking(MapperBookingDto.toBookingItem(booking.findFirstByItem_idAndEndBookingBefore(itemDto.getId(), localDateTime).get()));

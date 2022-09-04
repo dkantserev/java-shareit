@@ -21,10 +21,12 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(ItemController.class)
 class ItemControllerTest {
+
     @MockBean
     ItemService itemService;
     @MockBean
@@ -53,6 +56,7 @@ class ItemControllerTest {
 
     @BeforeEach
     void fill() {
+
         user.setId(1L);
         user.setName("gg");
         itemDto.setName("hh");
@@ -64,6 +68,7 @@ class ItemControllerTest {
 
     @Test
     void add() throws Exception {
+
         Mockito
                 .when(itemService.add(Optional.of(itemDto), Optional.of(userId)))
                 .thenReturn(itemDto);
@@ -75,21 +80,25 @@ class ItemControllerTest {
 
     @Test
     void update() throws Exception {
+
         ItemDtoUpdate itemDtoUpdate = new ItemDtoUpdate();
         itemDtoUpdate.setName("pp");
         Mockito
                 .when(itemService.update(itemDtoUpdate, Optional.of(1L), Optional.of(1L)))
                 .thenReturn(itemDto);
         mockMvc.perform(patch("/items/1").header("X-Sharer-User-Id", 1)
-                        .content(objectMapper.writeValueAsString(itemDtoUpdate)).contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(itemDtoUpdate))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("hh"));
     }
 
     @Test
     void get() throws Exception {
+
         Mockito
-                .when(itemService.get(1L, Optional.of(userId), LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
+                .when(itemService.get(1L, Optional.of(userId), LocalDateTime.now()
+                        .truncatedTo(ChronoUnit.SECONDS)))
                 .thenReturn(itemDto);
         mockMvc.perform(MockMvcRequestBuilders.get("/items/1").header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk())
@@ -98,6 +107,7 @@ class ItemControllerTest {
 
     @Test
     void getAll() throws Exception {
+
         Mockito
                 .when(itemService.getAllItemsUser(Optional.of(userId), Optional.of(from), Optional.of(size),
                         LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
@@ -110,6 +120,7 @@ class ItemControllerTest {
 
     @Test
     void search() throws Exception {
+
         Mockito
                 .when(itemService.search(Optional.of("qq"), Optional.of(from), Optional.of(size)))
                 .thenReturn(List.of(itemDto));
@@ -121,12 +132,14 @@ class ItemControllerTest {
 
     @Test
     void addComment() throws Exception {
+
         Mockito
                 .when(commentService.add(Optional.of(2L), Optional.of(2L), comment,
                         LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
                 .thenReturn(commentDto);
-        mockMvc.perform(MockMvcRequestBuilders.post("/items/2/comment").header("X-Sharer-User-Id", 2)
-                .content(objectMapper.writeValueAsString(comment)).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.post("/items/2/comment")
+                        .header("X-Sharer-User-Id", 2)
+                        .content(objectMapper.writeValueAsString(comment)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

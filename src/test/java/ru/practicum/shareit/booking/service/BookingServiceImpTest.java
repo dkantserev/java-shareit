@@ -53,6 +53,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenAddAndEmptyParam_thenException() {
+
         Optional<BookingDto> booking = Optional.empty();
         Optional<Long> userId = Optional.empty();
         assertThrows(RuntimeException.class, () -> bookingServiceImp.add(booking, userId, localDateTime));
@@ -60,6 +61,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenAddAndUserNotFound_thenException() {
+
         Optional<BookingDto> booking = Optional.of(bookingDto);
         Optional<Long> userId = Optional.of(1L);
         Mockito
@@ -70,6 +72,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenAddItemNotFound_thenException() {
+
         Clock clock1 = Clock.fixed(Instant.parse("2011-12-23T10:15:30.00Z"), ZoneId.of("UTC"));
         bookingDto.setStart(LocalDateTime.now(clock1));
         bookingDto.setItemId(1L);
@@ -87,6 +90,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenAddAndStartInPast_thenException() {
+
         Clock clock1 = Clock.fixed(Instant.parse("2011-12-23T10:15:30.00Z"), ZoneId.of("UTC"));
         bookingDto.setStart(LocalDateTime.now(clock1));
         bookingDto.setItemId(1L);
@@ -103,6 +107,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenAddAndStartInFuture_thenException() {
+
         Clock clock1 = Clock.fixed(Instant.parse("2015-11-23T10:15:30.00Z"), ZoneId.of("UTC"));
         Clock clock2 = Clock.fixed(Instant.parse("2011-12-23T10:15:30.00Z"), ZoneId.of("UTC"));
         bookingDto.setStart(LocalDateTime.now(clock1));
@@ -121,6 +126,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenAddUserIdItOwner_thenException() {
+
         Clock clock1 = Clock.fixed(Instant.parse("2015-11-23T10:15:30.00Z"), ZoneId.of("UTC"));
         Clock clock2 = Clock.fixed(Instant.parse("2015-12-23T10:15:30.00Z"), ZoneId.of("UTC"));
         item.setAvailable(true);
@@ -142,6 +148,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenAdd_thenPositive() {
+
         Clock clock1 = Clock.fixed(Instant.parse("2015-11-23T10:15:30.00Z"), ZoneId.of("UTC"));
         Clock clock2 = Clock.fixed(Instant.parse("2015-12-23T10:15:30.00Z"), ZoneId.of("UTC"));
         item.setAvailable(true);
@@ -167,6 +174,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenAddAndAvailableFalse_thenException() {
+
         Clock clock1 = Clock.fixed(Instant.parse("2015-11-23T10:15:30.00Z"), ZoneId.of("UTC"));
         Clock clock2 = Clock.fixed(Instant.parse("2015-12-23T10:15:30.00Z"), ZoneId.of("UTC"));
         item.setAvailable(false);
@@ -187,6 +195,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenGetAndBadParam_thenException() {
+
         Optional<Long> bookingId = Optional.empty();
         Optional<Long> userId = Optional.empty();
         assertThrows(RuntimeException.class, () -> bookingServiceImp.get(bookingId, userId));
@@ -194,6 +203,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenGetBookingNotFound_thenException() {
+
         Optional<Long> bookingId = Optional.of(1L);
         Optional<Long> userId = Optional.of(1L);
         Mockito
@@ -204,6 +214,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenGetNoBookerAndNoOwner_thenException() {
+
         Optional<Long> bookingId = Optional.of(1L);
         Optional<Long> userId = Optional.of(1L);
         item.setOwner(1L);
@@ -224,6 +235,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenSetApprovedWithEmptyParam_thenException() {
+
         Optional<Long> bookingId = Optional.empty();
         Optional<Long> userId = Optional.empty();
         Optional<String> approved = Optional.empty();
@@ -233,6 +245,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenSetApprovedBookingFailCheck1_thenException() {
+
         Optional<Long> bookingId = Optional.of(1L);
         Optional<Long> userId = Optional.of(1L);
         Optional<String> approved = Optional.of("true");
@@ -245,6 +258,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenSetApprovedBookingFailCheck2_thenException() {
+
         Optional<Long> bookingId = Optional.of(1L);
         Optional<Long> userId = Optional.of(1L);
         Optional<String> approved = Optional.of("true");
@@ -261,6 +275,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenSetApprovedBookingFailCheck3_thenException() {
+
         Optional<Long> bookingId = Optional.of(1L);
         Optional<Long> userId = Optional.of(1L);
         Optional<String> approved = Optional.of("true");
@@ -278,6 +293,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenSetApprovedBookingFailCheck4_thenException() {
+
         Optional<Long> bookingId = Optional.of(1L);
         Optional<Long> userId = Optional.of(1L);
         Optional<String> approved = Optional.of("false");
@@ -295,6 +311,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenSetApproved_thenPositive1() {
+
         Optional<Long> bookingId = Optional.of(1L);
         Optional<Long> userId = Optional.of(1L);
         Optional<String> approved = Optional.of("true");
@@ -313,6 +330,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenSetApproved_thenPositive2() {
+
         Optional<Long> bookingId = Optional.of(1L);
         Optional<Long> userId = Optional.of(1L);
         Optional<String> approved = Optional.of("false");
@@ -533,6 +551,7 @@ class BookingServiceImpTest {
 
     @Test
     public void whenGetAllAndBadStatus_thePositive5() {
+
         Optional<Long> userId = Optional.of(1L);
         String state = "rWAITIrNGT";
         Optional<Long> from = Optional.of(1L);
@@ -562,13 +581,14 @@ class BookingServiceImpTest {
 
     @Test
     public void whenGetAllOwnerWithEmptyUserId_WhenException() {
+
         Optional<Long> userId = Optional.empty();
         String state = "ALL";
         Optional<Long> from = Optional.of(1L);
         Optional<Long> size = Optional.of(3L);
         Clock clock = Clock.fixed(Instant.parse("2014-12-23T10:15:30.00Z"), ZoneId.of("UTC"));
         LocalDateTime localDateTime1 = LocalDateTime.now(clock);
-        assertThrows(RuntimeException.class, () -> bookingServiceImp.getAllOwner(userId, state, from, size,localDateTime1));
+        assertThrows(RuntimeException.class, () -> bookingServiceImp.getAllOwner(userId, state, from, size, localDateTime1));
     }
 
     @Test
@@ -581,7 +601,7 @@ class BookingServiceImpTest {
         Mockito
                 .when(userStorage.findById(1L))
                 .thenReturn(Optional.empty());
-        assertThrows(UserNotFound.class, () -> bookingServiceImp.getAllOwner(userId, state, from, size,localDateTime));
+        assertThrows(UserNotFound.class, () -> bookingServiceImp.getAllOwner(userId, state, from, size, localDateTime));
     }
 
     @Test
@@ -594,7 +614,7 @@ class BookingServiceImpTest {
         Mockito
                 .when(userStorage.findById(1L))
                 .thenReturn(Optional.of(user));
-        assertThrows(StatusException.class, () -> bookingServiceImp.getAllOwner(userId, state, from, size,localDateTime));
+        assertThrows(StatusException.class, () -> bookingServiceImp.getAllOwner(userId, state, from, size, localDateTime));
     }
 
     @Test
@@ -620,7 +640,7 @@ class BookingServiceImpTest {
         try (MockedStatic<MapperBookingDto> mapper = Mockito.mockStatic(MapperBookingDto.class)) {
             mapper.when(() -> MapperBookingDto.toBooking(bookingDto)).thenReturn(booking1);
             mapper.when(() -> MapperBookingDto.toBookingDto(booking1)).thenReturn(bookingDto);
-            bookingServiceImp.getAllOwner(userId, state, from, size,localDateTime1);
+            bookingServiceImp.getAllOwner(userId, state, from, size, localDateTime1);
             Mockito.verify(bookingStorage, Mockito.times(1)).ownerBooking(1L, pageable);
         }
     }
@@ -649,7 +669,7 @@ class BookingServiceImpTest {
         try (MockedStatic<MapperBookingDto> mapper = Mockito.mockStatic(MapperBookingDto.class)) {
             mapper.when(() -> MapperBookingDto.toBooking(bookingDto)).thenReturn(booking1);
             mapper.when(() -> MapperBookingDto.toBookingDto(booking1)).thenReturn(bookingDto);
-            bookingServiceImp.getAllOwner(userId, state, from, size,localDateTime1);
+            bookingServiceImp.getAllOwner(userId, state, from, size, localDateTime1);
             Mockito.verify(bookingStorage, Mockito.times(1)).ownerBookingFuture(1L, localDateTime1, pageable);
         }
     }
@@ -674,12 +694,12 @@ class BookingServiceImpTest {
                 .when(userStorage.findById(1L))
                 .thenReturn(Optional.ofNullable(user));
         Mockito
-                .when(bookingStorage.ownerBookingPast(1L,  localDateTime1, pageable))
+                .when(bookingStorage.ownerBookingPast(1L, localDateTime1, pageable))
                 .thenReturn(t);
         try (MockedStatic<MapperBookingDto> mapper = Mockito.mockStatic(MapperBookingDto.class)) {
             mapper.when(() -> MapperBookingDto.toBooking(bookingDto)).thenReturn(booking1);
             mapper.when(() -> MapperBookingDto.toBookingDto(booking1)).thenReturn(bookingDto);
-            bookingServiceImp.getAllOwner(userId, state, from, size,localDateTime1);
+            bookingServiceImp.getAllOwner(userId, state, from, size, localDateTime1);
             Mockito.verify(bookingStorage, Mockito.times(1)).ownerBookingPast(1L, localDateTime1, pageable);
 
         }
@@ -705,13 +725,13 @@ class BookingServiceImpTest {
                 .when(userStorage.findById(1L))
                 .thenReturn(Optional.ofNullable(user));
         Mockito
-                .when(bookingStorage.ownerBookingWaiting(1L,BookingStatus.WAITING,  localDateTime1, pageable))
+                .when(bookingStorage.ownerBookingWaiting(1L, BookingStatus.WAITING, localDateTime1, pageable))
                 .thenReturn(t);
         try (MockedStatic<MapperBookingDto> mapper = Mockito.mockStatic(MapperBookingDto.class)) {
             mapper.when(() -> MapperBookingDto.toBooking(bookingDto)).thenReturn(booking1);
             mapper.when(() -> MapperBookingDto.toBookingDto(booking1)).thenReturn(bookingDto);
-            bookingServiceImp.getAllOwner(userId, state, from, size,localDateTime1);
-            Mockito.verify(bookingStorage, Mockito.times(1)).ownerBookingWaiting(1L,BookingStatus.WAITING,localDateTime1, pageable);
+            bookingServiceImp.getAllOwner(userId, state, from, size, localDateTime1);
+            Mockito.verify(bookingStorage, Mockito.times(1)).ownerBookingWaiting(1L, BookingStatus.WAITING, localDateTime1, pageable);
 
         }
     }
@@ -736,13 +756,13 @@ class BookingServiceImpTest {
                 .when(userStorage.findById(1L))
                 .thenReturn(Optional.ofNullable(user));
         Mockito
-                .when(bookingStorage.ownerBookingWaiting(1L,BookingStatus.REJECTED,  localDateTime1, pageable))
+                .when(bookingStorage.ownerBookingWaiting(1L, BookingStatus.REJECTED, localDateTime1, pageable))
                 .thenReturn(t);
         try (MockedStatic<MapperBookingDto> mapper = Mockito.mockStatic(MapperBookingDto.class)) {
             mapper.when(() -> MapperBookingDto.toBooking(bookingDto)).thenReturn(booking1);
             mapper.when(() -> MapperBookingDto.toBookingDto(booking1)).thenReturn(bookingDto);
-            bookingServiceImp.getAllOwner(userId, state, from, size,localDateTime1);
-            Mockito.verify(bookingStorage, Mockito.times(1)).ownerBookingWaiting(1L,BookingStatus.REJECTED,localDateTime1, pageable);
+            bookingServiceImp.getAllOwner(userId, state, from, size, localDateTime1);
+            Mockito.verify(bookingStorage, Mockito.times(1)).ownerBookingWaiting(1L, BookingStatus.REJECTED, localDateTime1, pageable);
 
         }
     }
@@ -767,13 +787,13 @@ class BookingServiceImpTest {
                 .when(userStorage.findById(1L))
                 .thenReturn(Optional.ofNullable(user));
         Mockito
-                .when(bookingStorage.ownerBookingWaiting(1L,BookingStatus.REJECTED,  localDateTime1, pageable))
+                .when(bookingStorage.ownerBookingWaiting(1L, BookingStatus.REJECTED, localDateTime1, pageable))
                 .thenReturn(t);
         try (MockedStatic<MapperBookingDto> mapper = Mockito.mockStatic(MapperBookingDto.class)) {
             mapper.when(() -> MapperBookingDto.toBooking(bookingDto)).thenReturn(booking1);
             mapper.when(() -> MapperBookingDto.toBookingDto(booking1)).thenReturn(bookingDto);
-            bookingServiceImp.getAllOwner(userId, state, from, size,localDateTime1);
-            Mockito.verify(bookingStorage, Mockito.times(1)).ownerBookingWaiting(1L,BookingStatus.REJECTED,localDateTime1, pageable);
+            bookingServiceImp.getAllOwner(userId, state, from, size, localDateTime1);
+            Mockito.verify(bookingStorage, Mockito.times(1)).ownerBookingWaiting(1L, BookingStatus.REJECTED, localDateTime1, pageable);
 
         }
     }
