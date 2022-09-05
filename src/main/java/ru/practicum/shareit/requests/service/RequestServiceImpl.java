@@ -63,15 +63,18 @@ public class RequestServiceImpl implements RequestService {
             requestStorage.findByRequestor_idOrderByCreated(userId.get()).ifPresent(o -> ret.add(MapperItemRequest.toDto(o)));
             return ret;
         }
-        if (from.orElseThrow(RuntimeException::new) < 0 || size.orElseThrow(RuntimeException::new) < 0) {
+        if (from.isEmpty() || size.isEmpty()) {
+            throw new RuntimeException("empty from or size");
+        }
+        if (from.get() < 0 || size.get() < 0) {
             throw new RuntimeException("negativ param");
         }
         int start = 0;
-        if (from.orElseThrow(RuntimeException::new) > 0 && size.orElseThrow(RuntimeException::new) > 0) {
-            start = size.orElseThrow(RuntimeException::new).intValue() / from.orElseThrow(RuntimeException::new).intValue();
+        if (from.get() > 0 && size.get() > 0) {
+            start = size.get().intValue() / from.get().intValue();
         }
         requestStorage.findByRequestor_idNotOrderByCreatedDesc(userId.get(),
-                        PageRequest.of(start, size.orElseThrow(RuntimeException::new).intValue()))
+                        PageRequest.of(start, size.get().intValue()))
                 .getContent().forEach(o -> ret.add(MapperItemRequest.toDto(o)));
 
         return ret;
