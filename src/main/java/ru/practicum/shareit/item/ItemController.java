@@ -11,6 +11,8 @@ import ru.practicum.shareit.item.service.ItemService;
 
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,26 +45,33 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto get(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         log.info("get item id " + itemId);
-        return itemService.get(itemId, userId);
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        return itemService.get(itemId, userId, localDateTime);
     }
 
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
+    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
+                                @RequestParam(required = false) Optional<Long> from,
+                                @RequestParam(required = false) Optional<Long> size) {
         log.info("get all item user ");
-        return itemService.getAllItemsUser(userId);
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        return itemService.getAllItemsUser(userId, from, size, localDateTime);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam Optional<String> text) {
+    public List<ItemDto> search(@RequestParam Optional<String> text,
+                                @RequestParam(required = false) Optional<Long> from,
+                                @RequestParam(required = false) Optional<Long> size) {
         text.ifPresent(s -> log.info("search " + s));
-        log.info("search " + text.get());
-        return itemService.search(text);
+        log.info("search " + text.orElseThrow(RuntimeException::new));
+        return itemService.search(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
                                  @PathVariable Optional<Long> itemId, @RequestBody Comment comment) {
-        log.info("addComment userID " + userId.get() + " itemId " + itemId.get());
-        return commentService.add(userId, itemId, comment);
+        log.info("addComment userID " + userId.orElse(-999L) + " itemId " + itemId.orElse(-999L));
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        return commentService.add(userId, itemId, comment, localDateTime);
     }
 }

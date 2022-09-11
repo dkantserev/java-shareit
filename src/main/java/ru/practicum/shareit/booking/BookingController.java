@@ -9,7 +9,8 @@ import ru.practicum.shareit.booking.exception.StatusException;
 import ru.practicum.shareit.booking.service.BookingService;
 
 
-
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,8 @@ public class BookingController {
     public BookingDto add(@RequestBody(required = false) Optional<BookingDto> booking,
                           @RequestHeader("X-Sharer-User-Id") Optional<Long> userId) {
         log.info("add item " + booking + " user id" + userId);
-        return bookingService.add(booking, userId);
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        return bookingService.add(booking, userId, localDateTime);
     }
 
     @GetMapping("/{bookingId}")
@@ -49,16 +51,24 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId, @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
+                                   @RequestParam(defaultValue = "ALL") String state,
+                                   @RequestParam(required = false) Optional<Long> from,
+                                   @RequestParam(required = false) Optional<Long> size) {
         log.info("get all booking userId " + userId);
-        return bookingService.getAll(userId, state);
+        return bookingService.getAll(userId, state, from, size);
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getAllOwner(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId, @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingDto> getAllOwner(@RequestHeader("X-Sharer-User-Id") Optional<Long> userId,
+                                        @RequestParam(defaultValue = "ALL") String state,
+                                        @RequestParam(required = false) Optional<Long> from,
+                                        @RequestParam(required = false) Optional<Long> size) {
         log.info("get all booking ownerId " + userId);
-        return bookingService.getAllOwner(userId, state);
+        LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        return bookingService.getAllOwner(userId, state, from, size, localDateTime);
     }
+
 
     @ExceptionHandler(StatusException.class)
     public ResponseEntity<Map<String, String>> handleIllegalUpdateObject(StatusException e) {
