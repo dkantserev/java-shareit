@@ -1,6 +1,8 @@
 version: '3.8'
 services:
   db:
+    volumes:
+      - /var/lib/postgresql/data/
     image: postgres:13.7-alpine
     ports:
       - "6541:5432"
