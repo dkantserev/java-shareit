@@ -1,7 +1,6 @@
 package ru.practicum.server.item.dto;
 
 import lombok.Data;
-import ru.practicum.server.requests.model.ItemRequest;
 
 
 @Data

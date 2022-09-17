@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.item.dto.ItemsDto;
+
 import java.util.Map;
 
 
@@ -35,7 +36,7 @@ class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getItems(long itemId, long userId) {
-        return get("/"+itemId,userId);
+        return get("/" + itemId, userId);
     }
 
     public ResponseEntity<Object> getAllItemsUser(long userId, long from, long size) {
@@ -43,7 +44,7 @@ class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("?from={from}&size={size}",userId,parameters);
+        return get("?from={from}&size={size}", userId, parameters);
     }
 
     public ResponseEntity<Object> search(String text, long from, long size, long userId) {
@@ -52,6 +53,6 @@ class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("/search?text={text}&from={from}&size={size}",userId,parameters);
+        return get("/search?text={text}&from={from}&size={size}", userId, parameters);
     }
 }
