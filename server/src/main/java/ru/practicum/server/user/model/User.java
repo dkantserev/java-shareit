@@ -26,7 +26,7 @@ public class User {
     private String name;
     @NotNull
     @Email
-    @Column(name = "email")
+    @Column(name = "email",unique = true)
     private String email;
     @OneToMany(mappedBy = "booker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Booking> booking;
