@@ -175,7 +175,7 @@ class ItemServiceImpTest {
 
         id.setDescription("q");
         id.setAvailable(true);
-        id.setRequest(request);
+        id.setRequest(1L);
         id.setName("q");
         Optional<Long> userId = Optional.of(1L);
         Optional<Long> itemId = Optional.of(1L);
